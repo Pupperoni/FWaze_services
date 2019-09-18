@@ -70,13 +70,13 @@ END;
 DROP PROCEDURE IF EXISTS UpdateApplicationUserName;
 
 CREATE PROCEDURE UpdateApplicationUserName(
-    IN applicationId VARCHAR(15),
+    IN userId VARCHAR(15),
     IN userName VARCHAR(255)
 )
 BEGIN
     UPDATE advertiser_applications
-    SET userName = userName
-    WHERE id = applicationId;
+    SET user_name = userName
+    WHERE user_id = userId;
 END;
 
 -- Create index

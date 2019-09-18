@@ -85,11 +85,11 @@ END;
 DROP PROCEDURE IF EXISTS UpdateCommentUserName;
 
 CREATE PROCEDURE UpdateCommentUserName(
-    IN commentId VARCHAR(15),
+    IN userId VARCHAR(15),
     IN userName VARCHAR(255)
 )
 BEGIN
     UPDATE comments
     SET userName = userName
-    WHERE id = commentId;
+    WHERE user_id = userId;
 END;
