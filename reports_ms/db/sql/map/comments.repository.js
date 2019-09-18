@@ -95,6 +95,17 @@ const Handler = {
       .catch(e => {
         throw e;
       });
+  },
+
+  updateCommentUserName(data) {
+    return knex
+      .raw("CALL UpdateCommentUserName(?,?)", [data.id, data.name])
+      .then(row => {
+        return Promise.resolve(row[0][0]);
+      })
+      .catch(e => {
+        throw e;
+      });
   }
 };
 

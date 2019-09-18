@@ -196,6 +196,14 @@ const Handler = {
       .catch(e => {
         throw e;
       });
+  },
+
+  updateReportUserName(data) {
+    finder.findMultiKeyByPattern(`RMS:report:${data.id}:*`).then(keys => {
+      keys.forEach(key => {
+        redis.hset(key, "userName", data.name);
+      });
+    });
   }
 };
 

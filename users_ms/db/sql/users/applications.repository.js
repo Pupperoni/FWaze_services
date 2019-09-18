@@ -102,6 +102,17 @@ const Handler = {
       .catch(e => {
         throw e;
       });
+  },
+
+  updateApplicationUserName(data) {
+    return knex
+      .raw("CALL UpdateApplicationUserName(?,?)", [data.id, data.name])
+      .then(row => {
+        return Promise.resolve(row[0][0]);
+      })
+      .catch(e => {
+        throw e;
+      });
   }
 };
 

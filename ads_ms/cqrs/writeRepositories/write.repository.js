@@ -3,6 +3,7 @@ const redis = new Redis(process.env.REDIS_URL);
 const async = require("async");
 const broker = require("../../kafka");
 const CONSTANTS = require("../../constants");
+const queryHandler = require("../../db/sql/map/advertisements.repository");
 
 const WriteRepo = {
   queue: async.queue(function(task, callback) {
@@ -55,6 +56,8 @@ broker.aggregateSubscribe(event => {
   } else if (event.eventName === CONSTANTS.EVENTS.USER_UPDATED) {
     // do it
     WriteRepo.saveEvent(event);
+    // TODO - separate component
+    if (event.payload.name) queryHandler.updateAdUserName(event.payload);
   }
 });
 

@@ -4,7 +4,8 @@ const reportAggregate = require("../aggregateHelpers/map/reports.aggregate");
 const async = require("async");
 const broker = require("../../kafka");
 const CONSTANTS = require("../../constants");
-
+const reportQueryHandler = require("../../db/sql/map/reports.repository");
+const commentQueryHandler = require("../../db/sql/map/comments.repository");
 const WriteRepo = {
   queue: async.queue(function(task, callback) {
     WriteRepo.saveEvent(task.event).then(offset => {
@@ -77,6 +78,15 @@ broker.aggregateSubscribe(event => {
   if (event.eventName === CONSTANTS.EVENTS.USER_CREATED) {
     // do it
     WriteRepo.saveEvent(event);
+  }
+  if (event.eventName === CONSTANTS.EVENTS.USER_UPDATED) {
+    // TODO - separate component
+    // update user names
+    if (event.payload.name) {
+      reportQueryHandler.updateReportUserName(event.payload);
+      commentQueryHandler.updateCommentUserName(event.payload);
+    }
+    reportQueryHandler;
   }
 });
 

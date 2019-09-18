@@ -1,4 +1,5 @@
 const queryHandler = require("../../../db/sql/users/users.repository");
+const adQueryHandler = require("../../../db/sql/users/applications.repository");
 const BaseEventHandler = require("../base/base.event.handler");
 const CONSTANTS = require("../../../constants");
 
@@ -19,7 +20,8 @@ UserUpdatedEventHandler.prototype.getEvents = function() {
 UserUpdatedEventHandler.prototype.performEvent = function(event, offset) {
   console.log("[ACTUAL EVENT HANDLER] event received: user updated");
   queryHandler.updateUser(event.payload, offset);
-
+  if (event.payload.name)
+    adQueryHandler.updateApplicationUserName(event.payload);
   // create new commands
   let commands = [];
 

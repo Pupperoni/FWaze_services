@@ -1,7 +1,7 @@
 const knex = require("../../knex");
 const Redis = require("ioredis");
 const redis = new Redis(process.env.REDIS_URL);
-
+const finder = require("../../../utilities").keys;
 const Handler = {
   /*
    * Query
@@ -109,6 +109,14 @@ const Handler = {
       .catch(e => {
         throw e;
       });
+  },
+
+  updateAdUserName(data) {
+    finder.findMultiKeyByPattern(`AMS:ad:${data.id}:*`).then(keys => {
+      keys.forEach(key => {
+        redis.hset(key, "userName", data.name);
+      });
+    });
   }
 };
 
