@@ -82,7 +82,7 @@ const Handler = {
     };
     // scan to get keys
     finder
-      .findAdQueryKey(req.params.id)
+      .findSingleKeyByPattern(`AMS:ad:*:${req.params.id}`)
       .then(key => {
         return redis.hgetall(key);
       })
