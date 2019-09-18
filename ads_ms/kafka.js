@@ -75,6 +75,16 @@ const kafkaEndPoints = {
 };
 
 kafkaEndPoints.producer.on("ready", () => {
+  producerClient.refreshMetadata(
+    [
+      CONSTANTS.TOPICS.AD_COMMAND,
+      CONSTANTS.TOPICS.AD_EVENT,
+      CONSTANTS.TOPICS.USER_EVENT
+    ],
+    err => {
+      if (err) console.log(err);
+    }
+  );
   console.log("[BROKER] Producer is ready to send messages");
 });
 
@@ -136,6 +146,7 @@ const broker = {
     ];
 
     kafkaEndPoints.producer.send(messagesToBeSent, (err, results) => {
+      if (err) console.log(err);
       console.log("[BROKER] Sent data to", topic, results);
     });
   }
