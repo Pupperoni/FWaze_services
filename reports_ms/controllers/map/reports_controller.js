@@ -162,7 +162,10 @@ const Handler = {
   // Get user and vote report pair
   getUserVotePair(req, res, next) {
     redis
-      .sismember(`report:${req.params.reportId}:upvoters`, req.params.userId)
+      .sismember(
+        `RMS:report:${req.params.reportId}:upvoters`,
+        req.params.userId
+      )
       .then(result => {
         return res.json(result);
       })
