@@ -52,50 +52,6 @@ module.exports = {
                 if (payload.role) user.role = payload.role;
                 if (payload.avatarPath) user.avatarPath = payload.avatarPath;
                 break;
-              case CONSTANTS.EVENTS.USER_HOME_UPDATED:
-                if (!user.home) {
-                  user.home = {
-                    latitude: undefined,
-                    longitude: undefined,
-                    address: undefined
-                  };
-                }
-                user.home.latitude = payload.latitude;
-                user.home.longitude = payload.longitude;
-                user.home.address = payload.address;
-                break;
-              case CONSTANTS.EVENTS.USER_WORK_UPDATED:
-                if (!user.work) {
-                  user.work = {
-                    latitude: undefined,
-                    longitude: undefined,
-                    address: undefined
-                  };
-                }
-                user.work.latitude = payload.latitude;
-                user.work.longitude = payload.longitude;
-                user.work.address = payload.address;
-                break;
-              // case CONSTANTS.EVENTS.USER_ROUTE_CREATED:
-              //   if (!user.faveRoutes) {
-              //     user.faveRoutes = [];
-              //   }
-              //   user.faveRoutes.push(payload.routeId);
-              //   break;
-              // case CONSTANTS.EVENTS.USER_ROUTE_DELETED:
-              //   let index = user.faveRoutes.indexOf(payload.routeId);
-              //   user.faveRoutes.splice(index, 1);
-              //   break;
-              case CONSTANTS.EVENTS.USER_APPLICATION_CREATED:
-                user.status = 0;
-                break;
-              case CONSTANTS.EVENTS.USER_APPLICATION_APPROVED:
-                user.status = 1;
-                user.role = 1;
-                break;
-              case CONSTANTS.EVENTS.USER_APPLICATION_REJECTED:
-                user.status = -1;
-                break;
             }
           });
 
