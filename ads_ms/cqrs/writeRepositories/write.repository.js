@@ -3,8 +3,7 @@ const redis = new Redis(process.env.REDIS_URL);
 const async = require("async");
 const broker = require("../../kafka");
 const CONSTANTS = require("../../constants");
-const queryHandler = require("../../db/sql/map/advertisements.repository");
-
+const aggregate = require("../aggregateHelpers/users/users.aggregate");
 const WriteRepo = {
   queue: async.queue(function(task, callback) {
     WriteRepo.saveEvent(task.event).then(offset => {
@@ -31,7 +30,7 @@ const WriteRepo = {
       })
       .then(() => {
         // save to eventstore
-        redis.zadd(
+        let promise = redis.zadd(
           `AMS:${aggregateName}:${aggregateID}:events`,
           offset,
           JSON.stringify(event)
@@ -43,6 +42,30 @@ const WriteRepo = {
         //   .then(results => {
         //     console.log("[WRITE REPOSITORY]", results);
         //   });
+        return promise;
+      })
+      .then(() => {
+        // save snapshot after 50 offsets
+        if ((offset + 1) % 50 === 0) {
+          // could separate these into multiple files for cleaner code i guess
+          switch (aggregateName) {
+            case CONSTANTS.AGGREGATES.USER_AGGREGATE_NAME:
+              return aggregate.getCurrentState(aggregateID);
+          }
+        }
+      })
+      .then(aggregate => {
+        if (aggregate) {
+          console.log(`[WRITE REPOSITORY] Snapshot updated: ${offset}`);
+          // save currentstate with offset
+          redis.hset(
+            `AMS:${aggregateName}:${aggregateID}:snapshot`,
+            "offset",
+            offset,
+            "currentState",
+            JSON.stringify(aggregate)
+          );
+        }
         return offset;
       });
   }

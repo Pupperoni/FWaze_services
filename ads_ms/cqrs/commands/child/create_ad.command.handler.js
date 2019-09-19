@@ -1,7 +1,6 @@
 const BaseCommandHandler = require("../base/base.command.handler");
 const CONSTANTS = require("../../../constants");
 const shortid = require("shortid");
-const broker = require("../../../kafka");
 const userAggregate = require("../../aggregateHelpers/users/users.aggregate");
 
 function AdCreatedCommandHandler() {}

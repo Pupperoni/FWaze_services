@@ -4,8 +4,7 @@ const reportAggregate = require("../aggregateHelpers/map/reports.aggregate");
 const async = require("async");
 const broker = require("../../kafka");
 const CONSTANTS = require("../../constants");
-const reportQueryHandler = require("../../db/sql/map/reports.repository");
-const commentQueryHandler = require("../../db/sql/map/comments.repository");
+
 const WriteRepo = {
   queue: async.queue(function(task, callback) {
     WriteRepo.saveEvent(task.event).then(offset => {
