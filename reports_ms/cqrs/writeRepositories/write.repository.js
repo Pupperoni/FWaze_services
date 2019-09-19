@@ -71,6 +71,7 @@ const WriteRepo = {
       });
   }
 };
+
 function enqueueEvent(event, callback) {
   return Promise.resolve(
     WriteRepo.queue.push({ event: event }, function(offset) {
@@ -79,17 +80,6 @@ function enqueueEvent(event, callback) {
     })
   );
 }
-
-broker.aggregateSubscribe(event => {
-  console.log("[WRITE REPOSITORY] Message received from User Microservice");
-
-  // create user
-  if (event.eventName === CONSTANTS.EVENTS.USER_CREATED) {
-    return enqueueEvent(event, offset => {});
-  }
-  // default
-  else return Promise.resolve();
-});
 
 module.exports = {
   enqueueEvent: enqueueEvent

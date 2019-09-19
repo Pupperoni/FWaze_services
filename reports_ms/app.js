@@ -10,6 +10,7 @@ const cors = require("cors");
 const indexRouter = require("./routes/index");
 const mapRouter = require("./routes/map");
 const eventHandler = require("./cqrs/eventListeners/base/common.event.handler");
+const boundedContextHandler = require("./cqrs/boundedContext/base/common.bounded-context.handler");
 
 const http = require("http");
 const app = express();
