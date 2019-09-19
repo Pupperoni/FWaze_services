@@ -6,7 +6,7 @@ module.exports.keys = {
     if (typeof cursor === "undefined") {
       cursor = 0;
     }
-    console.log("[UTILITIES] Current cursor:", cursor);
+    // console.log("[UTILITIES] Current cursor:", cursor);
     return Promise.resolve(
       redis.scan(cursor, "match", pattern).then(results => {
         // update the cursor
@@ -35,7 +35,7 @@ module.exports.keys = {
     } else {
       keyList = keys;
     }
-    console.log("[UTILITIES] Current cursor:", cursor);
+    // console.log("[UTILITIES] Current cursor:", cursor);
     return Promise.resolve(
       redis.scan(cursor, "match", pattern).then(results => {
         // update the cursor
