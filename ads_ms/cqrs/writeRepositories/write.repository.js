@@ -49,25 +49,30 @@ const WriteRepo = {
 };
 
 broker.aggregateSubscribe(event => {
-  // Filter
+  console.log("[WRITE REPOSITORY] Message received from User Microservice");
+  // create user
   if (event.eventName === CONSTANTS.EVENTS.USER_CREATED) {
-    // do it
-    WriteRepo.saveEvent(event);
-  } else if (event.eventName === CONSTANTS.EVENTS.USER_UPDATED) {
-    // do it
-    WriteRepo.saveEvent(event);
-    // TODO - separate component
-    if (event.payload.name) queryHandler.updateAdUserName(event.payload);
+    return enqueueEvent(event, offset => {});
+  }
+  // update user
+  else if (event.eventName === CONSTANTS.EVENTS.USER_UPDATED) {
+    return enqueueEvent(event, offset => {});
+  }
+  // default
+  else {
+    return Promise.resolve();
   }
 });
 
+function enqueueEvent(event, callback) {
+  return Promise.resolve(
+    WriteRepo.queue.push({ event: event }, function(offset) {
+      console.log("[WRITE REPOSITORY] Saved to event store");
+      callback(offset);
+    })
+  );
+}
+
 module.exports = {
-  enqueueEvent(event, callback) {
-    return Promise.resolve(
-      WriteRepo.queue.push({ event: event }, function(offset) {
-        console.log("[WRITE REPOSITORY] Saved to event store");
-        callback(offset);
-      })
-    );
-  }
+  enqueueEvent: enqueueEvent
 };

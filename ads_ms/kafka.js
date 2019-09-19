@@ -125,11 +125,14 @@ const broker = {
     // when consumer receives a message, pass it to event handler
     kafkaEndPoints.userAggregateConsumerGroup.on("message", message => {
       let payload = JSON.parse(message.value);
-      console.log(
-        "[BROKER] Message received from Users Microservice. Saving event",
-        message
-      );
-      callback(payload);
+      callback(payload).then(() => {
+        kafkaEndPoints.userAggregateConsumerGroup.commit((err, data) => {
+          console.log(
+            "[BROKER] Committing to",
+            CONSTANTS.TOPICS.USER_AGGREGATE
+          );
+        });
+      });
     });
   },
 

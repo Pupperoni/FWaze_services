@@ -33,11 +33,6 @@ AdCreatedCommandHandler.prototype.validate = function(payload) {
   let reasons = [];
 
   // get role of user and check if advertiser
-  broker.publish(
-    CONSTANTS.TOPICS.USER_AGGREGATE,
-    payload.userId,
-    payload.aggregateID
-  );
   return Promise.resolve(
     userAggregate.getCurrentState(payload.userId).then(user => {
       // user does not exist

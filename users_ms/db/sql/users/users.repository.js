@@ -129,21 +129,6 @@ const Handler = {
       // set new name
       redis.hset(`UMS:user:${data.id}`, `name`, data.name);
 
-      // TODO - use kafka to send to reports, ads, comments, and applications
-      // // Update reports
-      // finder.findReportUserKey(data.id).then(keys => {
-      //   keys.forEach(key => {
-      //     redis.hset(key, "userName", data.name);
-      //   });
-      // });
-
-      // // Update ads
-      // finder.findAdUserKey(data.id).then(keys => {
-      //   keys.forEach(key => {
-      //     redis.hset(key, "userName", data.name);
-      //   });
-      // });
-
       // Update name checker
       redis.set(`UMS:user:name:${data.name}`, data.id);
     }

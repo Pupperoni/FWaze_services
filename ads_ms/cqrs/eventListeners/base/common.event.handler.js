@@ -87,4 +87,16 @@ broker.eventSubscribe((event, offset) => {
   return enqueueEvent(event, offset);
 });
 
+broker.aggregateSubscribe(event => {
+  console.log("[COMMON EVENT HANDLER] Event received from User Microservice");
+  // update user name
+  if (event.eventName === CONSTANTS.EVENTS.USER_UPDATED) {
+    // if exists in the payload
+    if (event.payload.name) {
+      return enqueueEvent(event, 0); // 0 offset because it's not really needed (can be omitted)
+    }
+  }
+  return Promise.resolve();
+});
+
 module.exports = CommonEventHandler;

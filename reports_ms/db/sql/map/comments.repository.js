@@ -2,7 +2,7 @@ const knex = require("../../knex");
 const Redis = require("ioredis");
 const redis = new Redis(process.env.REDIS_URL);
 let finder = require("../../../utilities").keys;
-// TODO - add sproc to update user name
+
 const Handler = {
   /*
    * Query

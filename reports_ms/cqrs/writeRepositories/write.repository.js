@@ -72,31 +72,26 @@ const WriteRepo = {
       });
   }
 };
+function enqueueEvent(event, callback) {
+  return Promise.resolve(
+    WriteRepo.queue.push({ event: event }, function(offset) {
+      console.log("[WRITE REPOSITORY] Saved to event store");
+      callback(offset);
+    })
+  );
+}
 
 broker.aggregateSubscribe(event => {
-  // Filter
+  console.log("[WRITE REPOSITORY] Message received from User Microservice");
+
+  // create user
   if (event.eventName === CONSTANTS.EVENTS.USER_CREATED) {
-    // do it
-    WriteRepo.saveEvent(event);
+    return enqueueEvent(event, offset => {});
   }
-  if (event.eventName === CONSTANTS.EVENTS.USER_UPDATED) {
-    // TODO - separate component
-    // update user names
-    if (event.payload.name) {
-      reportQueryHandler.updateReportUserName(event.payload);
-      commentQueryHandler.updateCommentUserName(event.payload);
-    }
-    reportQueryHandler;
-  }
+  // default
+  else return Promise.resolve();
 });
 
 module.exports = {
-  enqueueEvent(event, callback) {
-    return Promise.resolve(
-      WriteRepo.queue.push({ event: event }, function(offset) {
-        console.log("[WRITE REPOSITORY] Saved to event store");
-        callback(offset);
-      })
-    );
-  }
+  enqueueEvent: enqueueEvent
 };
