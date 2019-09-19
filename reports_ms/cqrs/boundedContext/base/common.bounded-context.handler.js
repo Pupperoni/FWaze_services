@@ -42,6 +42,8 @@ const CommonBoundedContextHandler = {
     try {
       // extract the handler from boundedContextHandlerList using the aggregate name
       let boundedContextHandler = this.boundedContextHandlerList[aggregateName];
+      if (!boundedContextHandler)
+        return Promise.reject(CONSTANTS.ERRORS.COMMAND_NOT_EXISTS);
       return Promise.resolve(boundedContextHandler);
     } catch (e) {
       // reject if aggregate name not found

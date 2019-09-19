@@ -1,7 +1,6 @@
 const Redis = require("ioredis");
 const redis = new Redis(process.env.REDIS_URL);
 const async = require("async");
-const broker = require("../../kafka");
 const CONSTANTS = require("../../constants");
 const aggregate = require("../aggregateHelpers/users/users.aggregate");
 const WriteRepo = {

@@ -1,6 +1,7 @@
 const Redis = require("ioredis");
 const redis = new Redis(process.env.REDIS_URL);
 const reportAggregate = require("../aggregateHelpers/map/reports.aggregate");
+const userAggregate = require("../aggregateHelpers/users/users.aggregate");
 const async = require("async");
 const CONSTANTS = require("../../constants");
 
@@ -51,6 +52,8 @@ const WriteRepo = {
           switch (aggregateName) {
             case CONSTANTS.AGGREGATES.REPORT_AGGREGATE_NAME:
               return reportAggregate.getCurrentState(aggregateID);
+            case CONSTANTS.AGGREGATES.USER_AGGREGATE_NAME:
+              return userAggregate.getCurrentState(aggregateID);
           }
         }
       })

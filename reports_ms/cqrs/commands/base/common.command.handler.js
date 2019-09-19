@@ -74,6 +74,8 @@ const CommonCommandHandler = {
     try {
       // extract the command handler from commandHandlerList using the command name
       let commandHandler = this.commandHandlerList[commandName];
+      if (!commandHandler)
+        return Promise.reject(CONSTANTS.ERRORS.COMMAND_NOT_EXISTS);
       return Promise.resolve(commandHandler);
     } catch (e) {
       // reject if command name not found

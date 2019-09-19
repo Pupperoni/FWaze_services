@@ -12,20 +12,22 @@ const CommonEventHandler = {
     console.log(
       `[COMMON EVENT HANDLER] Performing event ${task.event.eventName}`
     );
-    CommonEventHandler.sendEvent(task.event, task.offset).then(commands => {
-      // if there are additional commands, send them to common command handler
-      commands.forEach(command => {
-        console.log(
-          "[COMMON EVENT HANDLER] Sending",
-          command.commandName,
-          "to Command Handler"
-        );
-        let commandName = command.commandName;
-        let payload = command.payload;
-        CommonCommandHandler.sendCommand(payload, commandName);
-      });
-      callback();
-    });
+    CommonEventHandler.sendEvent(task.event, task.offset)
+      .then(commands => {
+        // if there are additional commands, send them to common command handler
+        commands.forEach(command => {
+          console.log(
+            "[COMMON EVENT HANDLER] Sending",
+            command.commandName,
+            "to Command Handler"
+          );
+          let commandName = command.commandName;
+          let payload = command.payload;
+          CommonCommandHandler.sendCommand(payload, commandName);
+        });
+        callback();
+      })
+      .catch(() => {});
   }),
 
   // save event handler instances
@@ -49,10 +51,12 @@ const CommonEventHandler = {
   // send to actual event handlers
   sendEvent(event, offset) {
     // get appropriate event handler
-    return this.getEventHandler(event.eventName).then(eventHandler => {
-      // run perform
-      return eventHandler.performEvent(event, offset);
-    });
+    return this.getEventHandler(event.eventName)
+      .then(eventHandler => {
+        // run perform
+        return eventHandler.performEvent(event, offset);
+      })
+      .catch(console.log);
   },
 
   // get event handler with corresponding event name
@@ -60,6 +64,9 @@ const CommonEventHandler = {
     try {
       // extract the event handler from eventHandlerList using the event name
       let eventHandler = this.eventHandlerList[eventName];
+      if (!eventHandler)
+        return Promise.reject(CONSTANTS.ERRORS.COMMAND_NOT_EXISTS);
+
       return Promise.resolve(eventHandler);
     } catch (e) {
       // reject if event name not found
@@ -89,14 +96,8 @@ broker.eventSubscribe((event, offset) => {
 
 broker.aggregateSubscribe(event => {
   console.log("[COMMON EVENT HANDLER] Event received from User Microservice");
-  // update user name
-  if (event.eventName === CONSTANTS.EVENTS.USER_UPDATED) {
-    // if exists in the payload
-    if (event.payload.name) {
-      return enqueueEvent(event, 0); // 0 offset because it's not really needed (can be omitted)
-    }
-  }
-  return Promise.resolve();
+
+  return enqueueEvent(event, 0); // 0 offset because it's not really needed (can be omitted)
 });
 
 module.exports = CommonEventHandler;
