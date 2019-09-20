@@ -1,8 +1,13 @@
+const queryHandler = require("../db/sql/map/advertisements.repository");
+const CommonCommandHandler = require("../cqrs/commands/base/common.command.handler");
 const express = require("express");
 const multer = require("multer");
 
 const router = express.Router();
-const adHandler = require("../controllers/map/advertisements_controller");
+const adHandler = require("../controllers/map/advertisements_controller")(
+  queryHandler,
+  CommonCommandHandler
+);
 
 const adstorage = multer.diskStorage({
   destination: (req, file, cb) => {

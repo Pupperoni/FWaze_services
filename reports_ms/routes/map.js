@@ -1,9 +1,18 @@
 const express = require("express");
 const multer = require("multer");
-
 const router = express.Router();
-const reportHandler = require("../controllers/map/reports_controller");
-const commentHandler = require("../controllers/map/comments_controller");
+const commentQueryHandler = require("../db/sql/map/comments.repository");
+const reportQueryHandler = require("../db/sql/map/reports.repository");
+const CommonCommandHandler = require("../cqrs/commands/base/common.command.handler");
+
+const reportHandler = require("../controllers/map/reports_controller")(
+  reportQueryHandler,
+  CommonCommandHandler
+);
+const commentHandler = require("../controllers/map/comments_controller")(
+  commentQueryHandler,
+  CommonCommandHandler
+);
 
 const adstorage = multer.diskStorage({
   destination: (req, file, cb) => {

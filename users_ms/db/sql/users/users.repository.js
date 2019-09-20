@@ -1,7 +1,6 @@
 const knex = require("../../knex");
 const Redis = require("ioredis");
 const redis = new Redis(process.env.REDIS_URL);
-let finder = require("../../../utilities").keys;
 
 const Handler = {
   /*
@@ -24,14 +23,9 @@ const Handler = {
 
   // Fetch users using name
   getUserByName(name) {
-    return knex
-      .raw("CALL GetUserByName(?)", [name])
-      .then(row => {
-        return Promise.resolve(row[0][0]);
-      })
-      .catch(e => {
-        throw e;
-      });
+    return redis.get(`UMS:user:name:${name}`).catch(e => {
+      throw e;
+    });
   },
 
   // Fetch users using email
@@ -46,16 +40,22 @@ const Handler = {
       });
   },
 
-  // Fetch a user's name and email
   getUserById(id) {
-    return knex
-      .raw("CALL GetUserById(?)", [id])
-      .then(row => {
-        return Promise.resolve(row[0][0]);
-      })
-      .catch(e => {
-        throw e;
-      });
+    return redis.hgetall(`UMS:user:${id}`).catch(e => {
+      throw e;
+    });
+  },
+
+  getUserHome(id) {
+    return redis.hgetall(`UMS:user:${id}:home`).catch(e => {
+      throw e;
+    });
+  },
+
+  getUserWork(id) {
+    return redis.hgetall(`UMS:user:${id}:wokr`).catch(e => {
+      throw e;
+    });
   },
 
   /*

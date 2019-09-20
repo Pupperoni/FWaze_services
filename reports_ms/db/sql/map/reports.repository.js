@@ -18,6 +18,20 @@ const Handler = {
       });
   },
 
+  getReportUpvotersCount(id) {
+    return redis.scard(`RMS:report:${id}:upvoters`).catch(e => {
+      throw e;
+    });
+  },
+
+  getUserVotePair(reportId, userId) {
+    return redis
+      .sismember(`RMS:report:${reportId}:upvoters`, userId)
+      .catch(e => {
+        throw e;
+      });
+  },
+
   getAllReports() {
     return knex
       .raw("CALL GetAllReports()")
@@ -40,11 +54,11 @@ const Handler = {
       });
   },
 
-  getReportById(reportId) {
-    return knex
-      .raw("CALL GetReportById(?)", [reportId])
-      .then(row => {
-        return Promise.resolve(row[0][0]);
+  getReportById(id) {
+    return finder
+      .findSingleKeyByPattern(`RMS:report:*:${id}`)
+      .then(key => {
+        return redis.hgetall(key);
       })
       .catch(e => {
         throw e;

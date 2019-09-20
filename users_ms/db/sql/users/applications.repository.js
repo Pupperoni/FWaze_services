@@ -31,6 +31,18 @@ const Handler = {
       });
   },
 
+  getApplicationByUserId(id) {
+    return redis
+      .get(`UMS:user:${id}:application`)
+      .then(result => {
+        if (!result) return Promise.resolve();
+        return redis.hgetall(`UMS:application:${result}`);
+      })
+      .catch(e => {
+        throw e;
+      });
+  },
+
   /*
    * Commands
    */

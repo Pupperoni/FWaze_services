@@ -1,9 +1,20 @@
 const express = require("express");
 const multer = require("multer");
+const router = express.Router();
+const userQueryHandler = require("../db/sql/users/users.repository");
+const applicationQueryHandler = require("../db/sql/users/applications.repository");
+const CommonCommandHandler = require("../cqrs/commands/base/common.command.handler");
 
-let router = express.Router();
-let userHandler = require("../controllers/users/users_controller");
-let applicationHandler = require("../controllers/users/applications_controller");
+let userHandler = require("../controllers/users/users_controller")(
+  userQueryHandler,
+  CommonCommandHandler
+);
+
+let applicationHandler = require("../controllers/users/applications_controller")(
+  applicationQueryHandler,
+  CommonCommandHandler
+);
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/profile_pictures/");

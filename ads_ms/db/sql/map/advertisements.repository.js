@@ -18,11 +18,11 @@ const Handler = {
       });
   },
 
-  getAdById(adId) {
-    return knex
-      .raw("CALL GetAdById(?)", [adId])
-      .then(row => {
-        return Promise.resolve(row[0][0]);
+  getAdById(id) {
+    return finder
+      .findSingleKeyByPattern(`AMS:ad:*:${id}`)
+      .then(key => {
+        return redis.hgetall(key);
       })
       .catch(e => {
         throw e;
