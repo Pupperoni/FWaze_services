@@ -54,7 +54,8 @@ const CommonEventHandler = {
     return this.getEventHandler(event.eventName)
       .then(eventHandler => {
         // run perform
-        return eventHandler.performEvent(event, offset);
+        if (eventHandler) return eventHandler.performEvent(event, offset);
+        else return Promise.resolve([]);
       })
       .catch(console.log);
   },
@@ -64,13 +65,10 @@ const CommonEventHandler = {
     try {
       // extract the event handler from eventHandlerList using the event name
       let eventHandler = this.eventHandlerList[eventName];
-      if (!eventHandler)
-        return Promise.reject(CONSTANTS.ERRORS.COMMAND_NOT_EXISTS);
-
       return Promise.resolve(eventHandler);
     } catch (e) {
       // reject if event name not found
-      return Promise.reject(CONSTANTS.ERRORS.COMMAND_NOT_EXISTS);
+      return Promise.reject(CONSTANTS.ERRORS.EVENT_NOT_EXISTS);
     }
   }
 };

@@ -51,12 +51,11 @@ const CommonEventHandler = {
   // send to actual event handlers
   sendEvent(event, offset) {
     // get appropriate event handler
-    return this.getEventHandler(event.eventName)
-      .then(eventHandler => {
-        // run perform
-        return eventHandler.performEvent(event, offset);
-      })
-      .catch(console.log);
+    return this.getEventHandler(event.eventName).then(eventHandler => {
+      // run perform
+      if (eventHandler) return eventHandler.performEvent(event, offset);
+      else return Promise.resolve([]);
+    });
   },
 
   // get event handler with corresponding event name
@@ -64,13 +63,10 @@ const CommonEventHandler = {
     try {
       // extract the event handler from eventHandlerList using the event name
       let eventHandler = this.eventHandlerList[eventName];
-      if (!eventHandler)
-        return Promise.reject(CONSTANTS.ERRORS.COMMAND_NOT_EXISTS);
-
       return Promise.resolve(eventHandler);
     } catch (e) {
       // reject if event name not found
-      return Promise.reject(CONSTANTS.ERRORS.COMMAND_NOT_EXISTS);
+      return Promise.reject(CONSTANTS.ERRORS.EVENT_NOT_EXISTS);
     }
   }
 };

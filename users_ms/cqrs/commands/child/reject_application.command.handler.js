@@ -1,8 +1,7 @@
 const BaseCommandHandler = require("../base/base.command.handler");
 const shortid = require("shortid");
 const CONSTANTS = require("../../../constants");
-// will fix
-const aggregate = require("../../aggregateHelpers/users/users.aggregate");
+const aggregate = require("../../aggregateHelpers/base/common.aggregate");
 
 function ApplicationRejectedCommandHandler() {}
 
@@ -25,7 +24,10 @@ ApplicationRejectedCommandHandler.prototype.getCommands = function() {
 };
 
 ApplicationRejectedCommandHandler.prototype.getAggregate = function(id) {
-  return aggregate.getCurrentState(id);
+  return aggregate.getCurrentState(
+    CONSTANTS.AGGREGATES.USER_AGGREGATE_NAME,
+    id
+  );
 };
 
 ApplicationRejectedCommandHandler.prototype.validate = function(payload) {

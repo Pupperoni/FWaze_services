@@ -1,7 +1,7 @@
 const BaseCommandHandler = require("../base/base.command.handler");
 const shortid = require("shortid");
 const CONSTANTS = require("../../../constants");
-const aggregate = require("../../aggregateHelpers/users/users.aggregate");
+const aggregate = require("../../aggregateHelpers/base/common.aggregate");
 
 function RouteDeletedCommandHandler() {}
 
@@ -20,7 +20,10 @@ RouteDeletedCommandHandler.prototype.getCommands = function() {
 };
 
 RouteDeletedCommandHandler.prototype.getAggregate = function(id) {
-  return reportAggregate.getCurrentState(id);
+  return aggregate.getCurrentState(
+    CONSTANTS.AGGREGATES.USER_AGGREGATE_NAME,
+    id
+  );
 };
 
 RouteDeletedCommandHandler.prototype.validate = function(payload) {

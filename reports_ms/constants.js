@@ -90,7 +90,8 @@ module.exports = {
     APPLICATION_NOT_EXISTS: "Application does not exist",
     DUPLICATE_APPLICATION: "Application already being processed",
     FILE_NOT_FOUND: "File not found",
-    COMMAND_NOT_EXISTS: "Command does not exist"
+    COMMAND_NOT_EXISTS: "Command does not exist",
+    EVENT_NOT_EXISTS: "Event does not exist"
   },
 
   SUCCESS: {

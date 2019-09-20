@@ -1,7 +1,7 @@
 const BaseCommandHandler = require("../base/base.command.handler");
 const CONSTANTS = require("../../../constants");
 const shortid = require("shortid");
-const userAggregate = require("../../aggregateHelpers/users/users.aggregate");
+const aggregate = require("../../aggregateHelpers/base/common.aggregate");
 
 function AdCreatedCommandHandler() {}
 
@@ -18,7 +18,7 @@ AdCreatedCommandHandler.prototype.getCommands = function() {
 };
 
 AdCreatedCommandHandler.prototype.getAggregate = function(id) {
-  return null;
+  return aggregate.getCurrentState(CONSTANTS.AGGREGATES.AD_AGGREGATE_NAME, id);
 };
 
 // gets user aggregate
@@ -33,21 +33,23 @@ AdCreatedCommandHandler.prototype.validate = function(payload) {
 
   // get role of user and check if advertiser
   return Promise.resolve(
-    userAggregate.getCurrentState(payload.userId).then(user => {
-      // user does not exist
-      if (!user) {
-        valid = false;
-        reasons.push(CONSTANTS.ERRORS.USER_NOT_EXISTS);
-      }
-      // user is regular (not valid)
-      else if (user.role === "0" || user.role === 0) {
-        valid = false;
-        reasons.push(CONSTANTS.ERRORS.USER_NOT_PERMITTED);
-      }
+    aggregate
+      .getCurrentState(CONSTANTS.AGGREGATES.USER_AGGREGATE_NAME, payload.userId)
+      .then(user => {
+        // user does not exist
+        if (!user) {
+          valid = false;
+          reasons.push(CONSTANTS.ERRORS.USER_NOT_EXISTS);
+        }
+        // user is regular (not valid)
+        else if (user.role === "0" || user.role === 0) {
+          valid = false;
+          reasons.push(CONSTANTS.ERRORS.USER_NOT_PERMITTED);
+        }
 
-      if (valid) return Promise.resolve(valid);
-      else return Promise.reject(reasons);
-    })
+        if (valid) return Promise.resolve(valid);
+        else return Promise.reject(reasons);
+      })
   );
 };
 

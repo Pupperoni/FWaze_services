@@ -1,9 +1,7 @@
 const Redis = require("ioredis");
 const redis = new Redis(process.env.REDIS_URL);
-const reportAggregate = require("../aggregateHelpers/map/reports.aggregate");
-const userAggregate = require("../aggregateHelpers/users/users.aggregate");
+const aggregate = require("../aggregateHelpers/map/reports.aggregate");
 const async = require("async");
-const CONSTANTS = require("../../constants");
 
 const WriteRepo = {
   queue: async.queue(function(task, callback) {
@@ -48,13 +46,7 @@ const WriteRepo = {
       .then(() => {
         // save snapshot after 50 offsets
         if ((offset + 1) % 50 === 0) {
-          // could separate these into multiple files for cleaner code i guess
-          switch (aggregateName) {
-            case CONSTANTS.AGGREGATES.REPORT_AGGREGATE_NAME:
-              return reportAggregate.getCurrentState(aggregateID);
-            case CONSTANTS.AGGREGATES.USER_AGGREGATE_NAME:
-              return userAggregate.getCurrentState(aggregateID);
-          }
+          return aggregate.getCurrentState(aggregateName, aggregateID);
         }
       })
       .then(aggregate => {

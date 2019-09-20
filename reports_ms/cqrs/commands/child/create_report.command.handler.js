@@ -1,8 +1,7 @@
 const BaseCommandHandler = require("../base/base.command.handler");
 const shortid = require("shortid");
 const CONSTANTS = require("../../../constants");
-const reportAggregate = require("../../aggregateHelpers/map/reports.aggregate");
-const userAggregate = require("../../aggregateHelpers/users/users.aggregate");
+const aggregate = require("../../aggregateHelpers/base/common.aggregate");
 
 function ReportCreatedCommandHandler() {}
 
@@ -21,7 +20,10 @@ ReportCreatedCommandHandler.prototype.getCommands = function() {
 };
 
 ReportCreatedCommandHandler.prototype.getAggregate = function(id) {
-  return reportAggregate.getCurrentState(id);
+  return aggregate.getCurrentState(
+    CONSTANTS.AGGREGATES.REPORT_AGGREGATE_NAME,
+    id
+  );
 };
 
 ReportCreatedCommandHandler.prototype.validate = function(payload) {
@@ -30,21 +32,23 @@ ReportCreatedCommandHandler.prototype.validate = function(payload) {
   let reasons = [];
   // check type of report
   return Promise.resolve(
-    userAggregate.getCurrentState(payload.userId).then(user => {
-      // user does not exist
-      if (!user) {
-        valid = false;
-        reasons.push(CONSTANTS.ERRORS.USER_NOT_EXISTS);
-      }
-      // invalid report type
-      if (payload.type < 0 || payload.type > 8) {
-        valid = false;
-        reasons.push(CONSTANTS.ERRORS.INVALID_REPORT_TYPE);
-      }
+    aggregate
+      .getCurrentState(CONSTANTS.AGGREGATES.USER_AGGREGATE_NAME, payload.userId)
+      .then(user => {
+        // user does not exist
+        if (!user) {
+          valid = false;
+          reasons.push(CONSTANTS.ERRORS.USER_NOT_EXISTS);
+        }
+        // invalid report type
+        if (payload.type < 0 || payload.type > 8) {
+          valid = false;
+          reasons.push(CONSTANTS.ERRORS.INVALID_REPORT_TYPE);
+        }
 
-      if (valid) return Promise.resolve(valid);
-      else return Promise.reject(reasons);
-    })
+        if (valid) return Promise.resolve(valid);
+        else return Promise.reject(reasons);
+      })
   );
 };
 

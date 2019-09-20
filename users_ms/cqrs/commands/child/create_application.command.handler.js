@@ -3,7 +3,7 @@ const CONSTANTS = require("../../../constants");
 const shortid = require("shortid");
 
 // will fix
-const aggregate = require("../../aggregateHelpers/users/users.aggregate");
+const aggregate = require("../../aggregateHelpers/base/common.aggregate");
 
 function ApplicationCreatedCommandHandler() {}
 
@@ -26,7 +26,10 @@ ApplicationCreatedCommandHandler.prototype.getCommands = function() {
 };
 
 ApplicationCreatedCommandHandler.prototype.getAggregate = function(id) {
-  return aggregate.getCurrentState(id);
+  return aggregate.getCurrentState(
+    CONSTANTS.AGGREGATES.USER_AGGREGATE_NAME,
+    id
+  );
 };
 
 ApplicationCreatedCommandHandler.prototype.validate = function(payload) {

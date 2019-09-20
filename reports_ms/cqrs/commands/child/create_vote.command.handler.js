@@ -1,8 +1,7 @@
 const BaseCommandHandler = require("../base/base.command.handler");
 const shortid = require("shortid");
 const CONSTANTS = require("../../../constants");
-const reportAggregate = require("../../aggregateHelpers/map/reports.aggregate");
-const userAggregate = require("../../aggregateHelpers/users/users.aggregate");
+const aggregate = require("../../aggregateHelpers/base/common.aggregate");
 
 function VoteCreatedCommandHandler() {}
 
@@ -21,7 +20,10 @@ VoteCreatedCommandHandler.prototype.getCommands = function() {
 };
 
 VoteCreatedCommandHandler.prototype.getAggregate = function(id) {
-  return reportAggregate.getCurrentState(id);
+  return aggregate.getCurrentState(
+    CONSTANTS.AGGREGATES.REPORT_AGGREGATE_NAME,
+    id
+  );
 };
 
 VoteCreatedCommandHandler.prototype.validate = function(payload) {
@@ -37,8 +39,8 @@ VoteCreatedCommandHandler.prototype.validate = function(payload) {
       }
       return Promise.resolve(valid);
     });
-  let userCheck = userAggregate
-    .getCurrentState(payload.userId) // check if user exists
+  let userCheck = aggregate
+    .getCurrentState(CONSTANTS.AGGREGATES.USER_AGGREGATE_NAME, payload.userId) // check if user exists
     .then(user => {
       if (!user) {
         valid = false;
