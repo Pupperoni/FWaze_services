@@ -20,7 +20,10 @@ CommentCreatedCommandHandler.prototype.getCommands = function() {
 };
 
 CommentCreatedCommandHandler.prototype.getAggregate = function(id) {
-  return aggregate.getCurrentState(CONSTANTS.COMMANDS.REPORT_AGGREGATE_NAME);
+  return aggregate.getCurrentState(
+    CONSTANTS.AGGREGATES.REPORT_AGGREGATE_NAME,
+    id
+  );
 };
 
 CommentCreatedCommandHandler.prototype.validate = function(payload) {
@@ -31,7 +34,6 @@ CommentCreatedCommandHandler.prototype.validate = function(payload) {
   let reportCheck = this.getAggregate(payload.reportId) // check if report exists
     .then(report => {
       // report doesn't exist
-      console.log(report);
       if (!report) {
         valid = false;
         reasons.push(CONSTANTS.ERRORS.REPORT_NOT_EXISTS);
@@ -41,7 +43,6 @@ CommentCreatedCommandHandler.prototype.validate = function(payload) {
   let userCheck = aggregate
     .getCurrentState(CONSTANTS.AGGREGATES.USER_AGGREGATE_NAME, payload.userId) // check if user exists
     .then(user => {
-      console.log(user);
       if (!user) {
         valid = false;
         reasons.push(CONSTANTS.ERRORS.USER_NOT_EXISTS);

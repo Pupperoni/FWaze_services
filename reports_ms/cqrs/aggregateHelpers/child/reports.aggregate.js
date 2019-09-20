@@ -57,16 +57,16 @@ ReportsAggregateHandler.prototype.getCurrentState = function(id) {
               report.longitude = payload.longitude;
               report.location = payload.location;
               break;
-            case CONSTANTS.EVENTS.REPORT_VOTE_CREATED:
-              if (!report.votes) report.votes = 0;
-              report.votes++;
-              if (!report.voters) report.voters = [];
-              report.voters.push(payload.userId);
-              break;
-            case CONSTANTS.EVENTS.REPORT_VOTE_DELETED:
-              report.votes--;
-              let index = report.voters.indexOf(payload.userId);
-              if (index != -1) report.voters.splice(index, 1);
+            // case CONSTANTS.EVENTS.REPORT_VOTE_CREATED:
+            //   if (!report.votes) report.votes = 0;
+            //   report.votes++;
+            //   if (!report.voters) report.voters = [];
+            //   report.voters.push(payload.userId);
+            //   break;
+            // case CONSTANTS.EVENTS.REPORT_VOTE_DELETED:
+            //   report.votes--;
+            //   let index = report.voters.indexOf(payload.userId);
+            //   if (index != -1) report.voters.splice(index, 1);
           }
         });
 

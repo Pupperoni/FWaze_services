@@ -1,6 +1,6 @@
 const Redis = require("ioredis");
 const redis = new Redis(process.env.REDIS_URL);
-const aggregate = require("../aggregateHelpers/map/reports.aggregate");
+const aggregate = require("../aggregateHelpers/base/common.aggregate");
 const async = require("async");
 
 const WriteRepo = {

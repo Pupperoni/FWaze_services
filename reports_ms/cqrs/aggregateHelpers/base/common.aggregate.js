@@ -45,6 +45,7 @@ CommonAggregateHandler.initialzeAggregateHandlers();
 
 // push aggregate and id to aggregate queue
 function getCurrentState(aggregateName, aggregateID) {
+  console.log(aggregateName);
   let aggregateHandler =
     CommonAggregateHandler.aggregateHandlerList[aggregateName];
   return Promise.resolve(

@@ -31,8 +31,7 @@ VoteDeletedCommandHandler.prototype.validate = function(payload) {
   let valid = true;
   let reasons = [];
 
-  let reportCheck = this.getAggregate
-    .getCurrentState(payload.id) // check if report exists
+  let reportCheck = this.getAggregate(payload.id) // check if report exists
     .then(report => {
       // report doesn't exist
       if (!report) {

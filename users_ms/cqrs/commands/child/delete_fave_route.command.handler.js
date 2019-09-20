@@ -30,17 +30,12 @@ RouteDeletedCommandHandler.prototype.validate = function(payload) {
   let valid = true;
   let reasons = [];
   return Promise.resolve(
-    aggregate.getCurrentState(payload.userId).then(user => {
+    this.getAggregate(payload.userId).then(user => {
       // user does not exist
       if (!user) {
         valid = false;
         reasons.push(CONSTANTS.ERRORS.USER_NOT_EXISTS);
       }
-      // // route doesnt belong to user
-      // else if (!user.faveRoutes.includes(payload.routeId)) {
-      //   valid = false;
-      //   reasons.push(CONSTANTS.ERRORS.USER_NOT_PERMITTED);
-      // }
       if (valid) {
         return Promise.resolve(valid);
       } else return Promise.reject(reasons);

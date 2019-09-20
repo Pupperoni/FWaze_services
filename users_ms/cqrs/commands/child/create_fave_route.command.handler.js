@@ -30,7 +30,7 @@ RouteCreatedCommandHandler.prototype.validate = function(payload) {
   let valid = true;
   let reasons = [];
   return Promise.resolve(
-    aggregate.getCurrentState(payload.id).then(user => {
+    this.getAggregate(payload.id).then(user => {
       // user does not exist
       if (!user) {
         valid = false;
