@@ -53,7 +53,7 @@ const Handler = {
   },
 
   getUserWork(id) {
-    return redis.hgetall(`UMS:user:${id}:wokr`).catch(e => {
+    return redis.hgetall(`UMS:user:${id}:work`).catch(e => {
       throw e;
     });
   },
