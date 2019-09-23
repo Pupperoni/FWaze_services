@@ -1,9 +1,10 @@
 const BaseCommandHandler = require("../base/base.command.handler");
 const shortid = require("shortid");
 const CONSTANTS = require("../../../constants");
-const aggregate = require("../../aggregateHelpers/base/common.aggregate");
 
-function ReportCreatedCommandHandler() {}
+function ReportCreatedCommandHandler(CommonAggregateHandler) {
+  BaseCommandHandler.call(this, CommonAggregateHandler);
+}
 
 ReportCreatedCommandHandler.prototype = Object.create(
   BaseCommandHandler.prototype
@@ -20,7 +21,7 @@ ReportCreatedCommandHandler.prototype.getCommands = function() {
 };
 
 ReportCreatedCommandHandler.prototype.getAggregate = function(id) {
-  return aggregate.getCurrentState(
+  return this.aggregate.getCurrentState(
     CONSTANTS.AGGREGATES.REPORT_AGGREGATE_NAME,
     id
   );
@@ -32,7 +33,7 @@ ReportCreatedCommandHandler.prototype.validate = function(payload) {
   let reasons = [];
   // check type of report
   return Promise.resolve(
-    aggregate
+    this.aggregate
       .getCurrentState(CONSTANTS.AGGREGATES.USER_AGGREGATE_NAME, payload.userId)
       .then(user => {
         // user does not exist

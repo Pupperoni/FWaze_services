@@ -1,10 +1,11 @@
 const BaseCommandHandler = require("../base/base.command.handler");
 const shortid = require("shortid");
 const CONSTANTS = require("../../../constants");
-const aggregate = require("../../aggregateHelpers/base/common.aggregate");
 const validator = require("../../../utilities").validators;
 
-function UserUpdatedCommandHandler() {}
+function UserUpdatedCommandHandler(CommonAggregateHandler) {
+  BaseCommandHandler.call(this, CommonAggregateHandler);
+}
 
 UserUpdatedCommandHandler.prototype = Object.create(
   BaseCommandHandler.prototype
@@ -25,7 +26,7 @@ UserUpdatedCommandHandler.prototype.getCommands = function() {
 };
 
 UserUpdatedCommandHandler.prototype.getAggregate = function(id) {
-  return aggregate.getCurrentState(
+  return this.aggregate.getCurrentState(
     CONSTANTS.AGGREGATES.USER_AGGREGATE_NAME,
     id
   );

@@ -1,4 +1,6 @@
-function BaseAggregateHandler() {}
+function BaseAggregateHandler(eventStoreHelper) {
+  this.eventStoreHelper = eventStoreHelper;
+}
 
 BaseAggregateHandler.prototype.getAggregates = function() {
   return [];

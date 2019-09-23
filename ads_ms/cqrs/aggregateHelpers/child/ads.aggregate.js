@@ -1,9 +1,9 @@
-const Redis = require("ioredis");
-const redis = new Redis(process.env.REDIS_URL);
 const CONSTANTS = require("../../../constants");
 const BaseAggregateHandler = require("../base/base.aggregate");
 
-function AdsAggregateHandler() {}
+function AdsAggregateHandler(eventStoreHelper) {
+  BaseAggregateHandler.call(this, eventStoreHelper);
+}
 
 AdsAggregateHandler.prototype = Object.create(BaseAggregateHandler.prototype);
 
@@ -19,25 +19,12 @@ AdsAggregateHandler.prototype.getAggregates = function() {
 
 AdsAggregateHandler.prototype.getCurrentState = function(id) {
   let ad = {};
-  let lastOffset = 0;
   return Promise.resolve(
-    // check if snapshot exists
-    redis
-      .hgetall(`AMS:${CONSTANTS.AGGREGATES.AD_AGGREGATE_NAME}:${id}:snapshot`)
-      .then(snapshot => {
-        // snapshot exists - start here
-        if (snapshot.offset && snapshot.currentState) {
-          ad = JSON.parse(snapshot.currentState);
-          lastOffset = parseInt(snapshot.offset) + 1;
-        }
-        return redis.zrange(
-          `AMS:${CONSTANTS.AGGREGATES.AD_AGGREGATE_NAME}:${id}:events`,
-          lastOffset,
-          -1
-        );
-      })
-      .then(history => {
-        // Recount history
+    this.eventStoreHelper
+      .getSnapshotAndEvents(CONSTANTS.AGGREGATES.AD_AGGREGATE_NAME, id)
+      .then(results => {
+        if (results.aggregate) ad = results.aggregate;
+        let history = results.events;
         history.forEach(event => {
           event = JSON.parse(event);
           let payload = event.payload;

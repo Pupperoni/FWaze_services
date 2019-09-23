@@ -1,6 +1,6 @@
-const CONSTANTS = require("../../../constants");
-
-function BaseBoundedContextHandler() {}
+function BaseBoundedContextHandler(writeRepo) {
+  this.writeRepo = writeRepo;
+}
 
 BaseBoundedContextHandler.prototype.getAggregates = function() {
   return [];

@@ -9,7 +9,6 @@ const logger = require("morgan");
 const cors = require("cors");
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
-const eventHandler = require("./cqrs/eventListeners/base/common.event.handler");
 
 const http = require("http");
 const app = express();

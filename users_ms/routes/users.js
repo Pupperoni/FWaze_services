@@ -1,9 +1,30 @@
 const express = require("express");
 const multer = require("multer");
 const router = express.Router();
+
 const userQueryHandler = require("../db/sql/users/users.repository");
 const applicationQueryHandler = require("../db/sql/users/applications.repository");
-const CommonCommandHandler = require("../cqrs/commands/base/common.command.handler");
+
+const eventStoreHelper = require("../cqrs/writeRepositories/event_store.helper")();
+const CommonAggregateHandler = require("../cqrs/aggregateHelpers/base/common.aggregate")(
+  eventStoreHelper
+);
+
+const writeRepo = require("../cqrs/writeRepositories/write.repository")(
+  eventStoreHelper,
+  CommonAggregateHandler
+);
+const broker = require("../kafka");
+
+const CommonCommandHandler = require("../cqrs/commands/base/common.command.handler")(
+  writeRepo,
+  broker,
+  CommonAggregateHandler
+);
+const eventHandler = require("../cqrs/eventListeners/base/common.event.handler")(
+  broker,
+  CommonCommandHandler
+);
 
 let userHandler = require("../controllers/users/users_controller")(
   userQueryHandler,

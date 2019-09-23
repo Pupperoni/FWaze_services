@@ -1,9 +1,10 @@
 const BaseCommandHandler = require("../base/base.command.handler");
 const CONSTANTS = require("../../../constants");
 const shortid = require("shortid");
-const aggregate = require("../../aggregateHelpers/base/common.aggregate");
 
-function AdCreatedCommandHandler() {}
+function AdCreatedCommandHandler(CommonAggregateHandler) {
+  BaseCommandHandler.call(this, CommonAggregateHandler);
+}
 
 AdCreatedCommandHandler.prototype = Object.create(BaseCommandHandler.prototype);
 
@@ -18,12 +19,10 @@ AdCreatedCommandHandler.prototype.getCommands = function() {
 };
 
 AdCreatedCommandHandler.prototype.getAggregate = function(id) {
-  return aggregate.getCurrentState(CONSTANTS.AGGREGATES.AD_AGGREGATE_NAME, id);
-};
-
-// gets user aggregate
-AdCreatedCommandHandler.prototype.getAggregate = function(id) {
-  return null;
+  return this.aggregate.getCurrentState(
+    CONSTANTS.AGGREGATES.AD_AGGREGATE_NAME,
+    id
+  );
 };
 
 AdCreatedCommandHandler.prototype.validate = function(payload) {
@@ -33,7 +32,7 @@ AdCreatedCommandHandler.prototype.validate = function(payload) {
 
   // get role of user and check if advertiser
   return Promise.resolve(
-    aggregate
+    this.aggregate
       .getCurrentState(CONSTANTS.AGGREGATES.USER_AGGREGATE_NAME, payload.userId)
       .then(user => {
         // user does not exist

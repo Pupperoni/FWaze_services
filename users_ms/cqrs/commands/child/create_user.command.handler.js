@@ -2,10 +2,11 @@ const BaseCommandHandler = require("../base/base.command.handler");
 const shortid = require("shortid");
 const bcrypt = require("bcryptjs");
 const CONSTANTS = require("../../../constants");
-const aggregate = require("../../aggregateHelpers/base/common.aggregate");
 const validator = require("../../../utilities").validators;
 
-function UserCreatedCommandHandler() {}
+function UserCreatedCommandHandler(CommonAggregateHandler) {
+  BaseCommandHandler.call(this, CommonAggregateHandler);
+}
 
 UserCreatedCommandHandler.prototype = Object.create(
   BaseCommandHandler.prototype
@@ -22,7 +23,7 @@ UserCreatedCommandHandler.prototype.getCommands = function() {
 };
 
 UserCreatedCommandHandler.prototype.getAggregate = function(id) {
-  return aggregate.getCurrentState(
+  return this.aggregate.getCurrentState(
     CONSTANTS.AGGREGATES.USER_AGGREGATE_NAME,
     id
   );

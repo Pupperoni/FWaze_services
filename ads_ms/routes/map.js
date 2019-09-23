@@ -1,14 +1,39 @@
-const queryHandler = require("../db/sql/map/advertisements.repository");
-const CommonCommandHandler = require("../cqrs/commands/base/common.command.handler");
 const express = require("express");
 const multer = require("multer");
-
 const router = express.Router();
+
+const queryHandler = require("../db/sql/map/advertisements.repository");
+
+const eventStoreHelper = require("../cqrs/writeRepositories/event_store.helper")();
+const CommonAggregateHandler = require("../cqrs/aggregateHelpers/base/common.aggregate")(
+  eventStoreHelper
+);
+
+const writeRepo = require("../cqrs/writeRepositories/write.repository")(
+  eventStoreHelper,
+  CommonAggregateHandler
+);
+const broker = require("../kafka");
+
+const CommonCommandHandler = require("../cqrs/commands/base/common.command.handler")(
+  writeRepo,
+  broker,
+  CommonAggregateHandler
+);
+
+const eventHandler = require("../cqrs/eventListeners/base/common.event.handler")(
+  broker,
+  CommonCommandHandler
+);
+const boundedContextHandler = require("../cqrs/boundedContext/base/common.bounded-context.handler")(
+  broker,
+  writeRepo
+);
+
 const adHandler = require("../controllers/map/advertisements_controller")(
   queryHandler,
   CommonCommandHandler
 );
-
 const adstorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/ads/");

@@ -14,7 +14,6 @@ const controller = function(queryHandler, CommonCommandHandler) {
         .then(result => {
           return res.json({ data: result });
         })
-
         .catch(e => {
           return res.status(500).json({ err: e });
         });

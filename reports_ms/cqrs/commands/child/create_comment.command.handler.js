@@ -1,9 +1,10 @@
 const BaseCommandHandler = require("../base/base.command.handler");
 const shortid = require("shortid");
 const CONSTANTS = require("../../../constants");
-const aggregate = require("../../aggregateHelpers/base/common.aggregate");
 
-function CommentCreatedCommandHandler() {}
+function CommentCreatedCommandHandler(CommonAggregateHandler) {
+  BaseCommandHandler.call(this, CommonAggregateHandler);
+}
 
 CommentCreatedCommandHandler.prototype = Object.create(
   BaseCommandHandler.prototype
@@ -20,7 +21,7 @@ CommentCreatedCommandHandler.prototype.getCommands = function() {
 };
 
 CommentCreatedCommandHandler.prototype.getAggregate = function(id) {
-  return aggregate.getCurrentState(
+  return this.aggregate.getCurrentState(
     CONSTANTS.AGGREGATES.REPORT_AGGREGATE_NAME,
     id
   );
@@ -40,7 +41,7 @@ CommentCreatedCommandHandler.prototype.validate = function(payload) {
       }
       return Promise.resolve(valid);
     });
-  let userCheck = aggregate
+  let userCheck = this.aggregate
     .getCurrentState(CONSTANTS.AGGREGATES.USER_AGGREGATE_NAME, payload.userId) // check if user exists
     .then(user => {
       if (!user) {

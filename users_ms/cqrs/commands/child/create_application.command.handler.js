@@ -2,10 +2,9 @@ const BaseCommandHandler = require("../base/base.command.handler");
 const CONSTANTS = require("../../../constants");
 const shortid = require("shortid");
 
-// will fix
-const aggregate = require("../../aggregateHelpers/base/common.aggregate");
-
-function ApplicationCreatedCommandHandler() {}
+function ApplicationCreatedCommandHandler(CommonAggregateHandler) {
+  BaseCommandHandler.call(this, CommonAggregateHandler);
+}
 
 ApplicationCreatedCommandHandler.prototype = Object.create(
   BaseCommandHandler.prototype
@@ -26,7 +25,7 @@ ApplicationCreatedCommandHandler.prototype.getCommands = function() {
 };
 
 ApplicationCreatedCommandHandler.prototype.getAggregate = function(id) {
-  return aggregate.getCurrentState(
+  return this.aggregate.getCurrentState(
     CONSTANTS.AGGREGATES.USER_AGGREGATE_NAME,
     id
   );

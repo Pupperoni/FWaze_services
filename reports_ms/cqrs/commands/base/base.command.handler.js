@@ -1,6 +1,8 @@
 const CONSTANTS = require("../../../constants");
 
-function BaseCommandHandler() {}
+function BaseCommandHandler(aggregate) {
+  this.aggregate = aggregate;
+}
 
 BaseCommandHandler.prototype.getCommands = function() {
   return [];

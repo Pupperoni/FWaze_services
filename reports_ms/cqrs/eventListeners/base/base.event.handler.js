@@ -1,6 +1,8 @@
 const CONSTANTS = require("../../../constants");
 
-function BaseEventHandler() {}
+function BaseEventHandler(writeRepo) {
+  this.writeRepo = writeRepo;
+}
 
 BaseEventHandler.prototype.getEvents = function() {
   return [];

@@ -1,6 +1,5 @@
 const kafka = require("kafka-node");
 const CONSTANTS = require("./constants");
-const aggregate = require("./cqrs/aggregateHelpers/users/users.aggregate");
 
 let commandOptions = {
   kafkaHost: `${process.env.KAFKA_HOST_NAME}:${process.env.KAFKA_PORT}`, // connect directly to kafka broker (instantiates a KafkaClient)

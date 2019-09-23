@@ -1,9 +1,35 @@
 const express = require("express");
 const multer = require("multer");
 const router = express.Router();
+
 const commentQueryHandler = require("../db/sql/map/comments.repository");
 const reportQueryHandler = require("../db/sql/map/reports.repository");
-const CommonCommandHandler = require("../cqrs/commands/base/common.command.handler");
+
+const eventStoreHelper = require("../cqrs/writeRepositories/event_store.helper")();
+const CommonAggregateHandler = require("../cqrs/aggregateHelpers/base/common.aggregate")(
+  eventStoreHelper
+);
+
+const writeRepo = require("../cqrs/writeRepositories/write.repository")(
+  eventStoreHelper,
+  CommonAggregateHandler
+);
+const broker = require("../kafka");
+
+const CommonCommandHandler = require("../cqrs/commands/base/common.command.handler")(
+  writeRepo,
+  broker,
+  CommonAggregateHandler
+);
+
+const eventHandler = require("../cqrs/eventListeners/base/common.event.handler")(
+  broker,
+  CommonCommandHandler
+);
+const boundedContextHandler = require("../cqrs/boundedContext/base/common.bounded-context.handler")(
+  broker,
+  writeRepo
+);
 
 const reportHandler = require("../controllers/map/reports_controller")(
   reportQueryHandler,
@@ -13,17 +39,6 @@ const commentHandler = require("../controllers/map/comments_controller")(
   commentQueryHandler,
   CommonCommandHandler
 );
-
-const adstorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/ads/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, req.body.userId + "-" + Date.now() + ".png");
-  }
-});
-
-const adUpload = multer({ storage: adstorage });
 
 const reportstorage = multer.diskStorage({
   destination: (req, file, cb) => {

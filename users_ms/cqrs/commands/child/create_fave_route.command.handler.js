@@ -1,9 +1,10 @@
 const BaseCommandHandler = require("../base/base.command.handler");
 const shortid = require("shortid");
 const CONSTANTS = require("../../../constants");
-const aggregate = require("../../aggregateHelpers/base/common.aggregate");
 
-function RouteCreatedCommandHandler() {}
+function RouteCreatedCommandHandler(CommonAggregateHandler) {
+  BaseCommandHandler.call(this, CommonAggregateHandler);
+}
 
 RouteCreatedCommandHandler.prototype = Object.create(
   BaseCommandHandler.prototype
@@ -20,7 +21,7 @@ RouteCreatedCommandHandler.prototype.getCommands = function() {
 };
 
 RouteCreatedCommandHandler.prototype.getAggregate = function(id) {
-  return aggregate.getCurrentState(
+  return this.aggregate.getCurrentState(
     CONSTANTS.AGGREGATES.USER_AGGREGATE_NAME,
     id
   );
