@@ -209,7 +209,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
       queryHandler
         .getUserByName(payload.name) // checks name
         .then(user => {
-          if (user.length > 0 && user[0].id !== payload.id)
+          if (user && user !== payload.id)
             return Promise.reject(CONSTANTS.ERRORS.USERNAME_TAKEN);
           else
             return Promise.resolve(queryHandler.getUserByEmail(payload.email)); // checks email
