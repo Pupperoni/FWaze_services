@@ -76,20 +76,20 @@ const controller = function(queryHandler, CommonCommandHandler) {
 
     // Add a new fave route
     getFaveRoutes(req, res, next) {
-      queryHandler.getUserById(req.params.id).then(user => {
-        if (!user.id)
-          return res
-            .status(400)
-            .json({ msg: CONSTANTS.ERRORS.USER_NOT_EXISTS });
-        queryHandler
-          .getFaveRoutes(req.params.id)
-          .then(results => {
+      queryHandler
+        .getUserById(req.params.id)
+        .then(user => {
+          if (!user.id)
+            return res
+              .status(400)
+              .json({ msg: CONSTANTS.ERRORS.USER_NOT_EXISTS });
+          return queryHandler.getFaveRoutes(req.params.id).then(results => {
             return res.json({ routes: results });
-          })
-          .catch(e => {
-            return res.status(500).json({ err: e });
           });
-      });
+        })
+        .catch(e => {
+          return res.status(500).json({ err: e });
+        });
     },
 
     // Log in a user
@@ -208,8 +208,8 @@ const controller = function(queryHandler, CommonCommandHandler) {
       // validate user details
       queryHandler
         .getUserByName(payload.name) // checks name
-        .then(user => {
-          if (user && user !== payload.id)
+        .then(userId => {
+          if (userId && userId !== payload.id)
             return Promise.reject(CONSTANTS.ERRORS.USERNAME_TAKEN);
           else
             return Promise.resolve(queryHandler.getUserByEmail(payload.email)); // checks email
@@ -220,8 +220,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
           else return Promise.resolve(true);
         })
         .then(() => {
-          // commandHandler.userUpdated(req.body, req.file);
-          CommonCommandHandler.sendCommand(
+          return CommonCommandHandler.sendCommand(
             payload,
             CONSTANTS.COMMANDS.UPDATE_USER
           );
