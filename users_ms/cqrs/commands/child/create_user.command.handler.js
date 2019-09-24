@@ -2,7 +2,7 @@ const BaseCommandHandler = require("../base/base.command.handler");
 const shortid = require("shortid");
 const bcrypt = require("bcryptjs");
 const CONSTANTS = require("../../../constants");
-const validator = require("../../../utilities").validators;
+const validator = require("../../../utils/validators");
 
 function UserCreatedCommandHandler(CommonAggregateHandler) {
   BaseCommandHandler.call(this, CommonAggregateHandler);

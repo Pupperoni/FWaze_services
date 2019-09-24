@@ -13,7 +13,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
       queryHandler
         .getAllUsers()
         .then(results => {
-          if (results.length == 0)
+          if (results.length === 0)
             return res
               .status(400)
               .json({ msg: CONSTANTS.ERRORS.USER_NOT_EXISTS });
@@ -29,7 +29,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
       queryHandler
         .getUserById(req.params.id)
         .then(result => {
-          if (!result)
+          if (!result.id)
             return res
               .status(400)
               .json({ msg: CONSTANTS.ERRORS.USER_NOT_EXISTS });
@@ -56,10 +56,10 @@ const controller = function(queryHandler, CommonCommandHandler) {
       let options = {
         root: "/usr/src/app/"
       };
-      queryHandler
+      return queryHandler
         .getUserById(req.params.id)
         .then(user => {
-          if (user) {
+          if (user.id) {
             if (user.avatarPath) return res.sendFile(user.avatarPath, options);
             else return res.json({ msg: CONSTANTS.ERRORS.FILE_NOT_FOUND });
           } else
@@ -70,14 +70,14 @@ const controller = function(queryHandler, CommonCommandHandler) {
         .catch(e => {
           return res
             .status(500)
-            .json({ msg: CONSTANTS.ERRORS.DEFAULT_SERVER_ERROR, err: e });
+            .json({ msg: CONSTANTS.ERRORS.DEFAULT_SERVER_ERROR });
         });
     },
 
     // Add a new fave route
     getFaveRoutes(req, res, next) {
       queryHandler.getUserById(req.params.id).then(user => {
-        if (!user)
+        if (!user.id)
           return res
             .status(400)
             .json({ msg: CONSTANTS.ERRORS.USER_NOT_EXISTS });
@@ -157,7 +157,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
       };
       payload.aggregateID = payload.id;
       // validate user details
-      queryHandler
+      return queryHandler
         .getUserByName(payload.name) // checks name
         .then(user => {
           if (user) return Promise.reject(CONSTANTS.ERRORS.USERNAME_TAKEN);
@@ -170,7 +170,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
         })
         .then(() => {
           // all good
-          CommonCommandHandler.sendCommand(
+          return CommonCommandHandler.sendCommand(
             payload,
             CONSTANTS.COMMANDS.CREATE_USER
           );

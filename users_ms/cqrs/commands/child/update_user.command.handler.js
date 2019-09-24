@@ -1,7 +1,7 @@
 const BaseCommandHandler = require("../base/base.command.handler");
 const shortid = require("shortid");
 const CONSTANTS = require("../../../constants");
-const validator = require("../../../utilities").validators;
+const validator = require("../../../utils/validators");
 
 function UserUpdatedCommandHandler(CommonAggregateHandler) {
   BaseCommandHandler.call(this, CommonAggregateHandler);

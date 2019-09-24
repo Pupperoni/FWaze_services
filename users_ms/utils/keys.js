@@ -1,7 +1,7 @@
 const Redis = require("ioredis");
 const redis = new Redis(process.env.REDIS_URL);
 
-module.exports.keys = {
+module.exports = {
   findSingleKeyByPattern(pattern, cursor) {
     if (typeof cursor === "undefined") {
       cursor = 0;
@@ -169,12 +169,5 @@ module.exports.keys = {
         }
       })
     );
-  }
-};
-
-module.exports.validators = {
-  validateEmail(email) {
-    let re = /\S+@\S+/;
-    return re.test(email);
   }
 };

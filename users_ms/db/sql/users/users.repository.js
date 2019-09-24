@@ -24,7 +24,7 @@ const Handler = {
   // Fetch users using name
   getUserByName(name) {
     return redis.get(`UMS:user:name:${name}`).catch(e => {
-      throw e;
+      return Promise.reject(e);
     });
   },
 
@@ -42,19 +42,19 @@ const Handler = {
 
   getUserById(id) {
     return redis.hgetall(`UMS:user:${id}`).catch(e => {
-      throw e;
+      return Promise.reject(e);
     });
   },
 
   getUserHome(id) {
     return redis.hgetall(`UMS:user:${id}:home`).catch(e => {
-      throw e;
+      return Promise.reject(e);
     });
   },
 
   getUserWork(id) {
     return redis.hgetall(`UMS:user:${id}:work`).catch(e => {
-      throw e;
+      return Promise.reject(e);
     });
   },
 
@@ -116,7 +116,7 @@ const Handler = {
         return Promise.resolve(row[0]);
       })
       .catch(e => {
-        throw e;
+        return Promise.reject(e);
       });
   },
 
