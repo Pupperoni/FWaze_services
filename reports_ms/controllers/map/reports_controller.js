@@ -19,7 +19,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
     // Query responsibility
     //
 
-    // Get all reports
+    // Get all reports (deprecated)
     getAllReports(req, res, next) {
       queryHandler
         .getAllReports()
@@ -37,7 +37,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
       queryHandler
         .getReportById(req.params.id)
         .then(result => {
-          if (!result)
+          if (!result.id)
             return res
               .status(400)
               .json({ msg: CONSTANTS.ERRORS.REPORT_NOT_EXISTS });
@@ -52,7 +52,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
         });
     },
 
-    // Get all reports of a specific type
+    // Get all reports of a specific type (deprecated)
     getReportsByType(req, res, next) {
       queryHandler
         .getReportsByType(reportTypes[req.params.type])
@@ -68,7 +68,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
         });
     },
 
-    // Get all reports enclosed in an area
+    // Get all reports enclosed in an area (deprecated)
     getReportsByRange(req, res, next) {
       let right = req.query.tright.split(",")[1];
       let left = req.query.bleft.split(",")[1];
@@ -147,9 +147,14 @@ const controller = function(queryHandler, CommonCommandHandler) {
     // Get vote count
     getVoteCount(req, res, next) {
       // count number of votes in a report
-      queryHandler.getReportUpvotersCount(req.params.id).then(count => {
-        return res.json({ result: count });
-      });
+      queryHandler
+        .getReportUpvotersCount(req.params.id)
+        .then(count => {
+          return res.json({ result: count });
+        })
+        .catch(e => {
+          return res.status(500).json({ err: e });
+        });
     },
 
     // Get user and vote report pair
@@ -169,10 +174,10 @@ const controller = function(queryHandler, CommonCommandHandler) {
       let options = {
         root: "/usr/src/app/"
       };
-      queryHandler
+      return queryHandler
         .getReportById(req.params.id)
         .then(report => {
-          if (report) {
+          if (report.id) {
             if (report.photoPath)
               return res.sendFile(report.photoPath, options);
             else return res.json({ msg: CONSTANTS.ERRORS.FILE_NOT_FOUND });

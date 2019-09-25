@@ -22,10 +22,12 @@ function CommonCommandHandler(writeRepo, broker, CommonAggregateHandler) {
     // save command handler instances
     initialzeCommandHandlers() {
       // scan all files in the commands directory
-      fs.readdir(`/usr/src/app/cqrs/commands/child`, (err, files) => {
+      fs.readdir(`${process.cwd()}/cqrs/commands/child`, (err, files) => {
         for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
           // get command names from each file
-          const handler = require(`/usr/src/app/cqrs/commands/child/${files[fileIndex]}`);
+          const handler = require(`${process.cwd()}/cqrs/commands/child/${
+            files[fileIndex]
+          }`);
           let commandHandler = new handler(CommonAggregateHandler);
           let commands = commandHandler.getCommands();
 

@@ -1,7 +1,7 @@
 const knex = require("../../knex");
 const Redis = require("ioredis");
 const redis = new Redis(process.env.REDIS_URL);
-const finder = require("../../../utilities").keys;
+const finder = require("../../../utils/keys");
 const Handler = {
   /*
    * Query

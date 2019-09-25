@@ -1,7 +1,7 @@
 const Redis = require("ioredis");
 const redis = new Redis(process.env.REDIS_URL);
 
-module.exports.keys = {
+module.exports = {
   findSingleKeyByPattern(pattern, cursor) {
     if (typeof cursor === "undefined") {
       cursor = 0;
@@ -11,6 +11,7 @@ module.exports.keys = {
       redis.scan(cursor, "match", pattern).then(results => {
         // update the cursor
         cursor = results[0];
+
         // the key has been found!
         if (results[1].length > 0) {
           console.log("[UTILITIES] Key found", results[1]);
@@ -169,12 +170,5 @@ module.exports.keys = {
         }
       })
     );
-  }
-};
-
-module.exports.validators = {
-  validateEmail(email) {
-    let re = /\S+@\S+/;
-    return re.test(email);
   }
 };

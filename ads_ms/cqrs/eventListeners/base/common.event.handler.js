@@ -33,10 +33,12 @@ function CommonEventHandler(broker, CommonCommandHandler) {
     // save event handler instances
     initialzeEventHandlers() {
       // scan all files in the event handlers directory
-      fs.readdir(`/usr/src/app/cqrs/eventListeners/child`, (err, files) => {
+      fs.readdir(`${process.cwd()}/cqrs/eventListeners/child`, (err, files) => {
         for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
           // get events names from each file
-          const handler = require(`/usr/src/app/cqrs/eventListeners/child/${files[fileIndex]}`);
+          const handler = require(`${process.cwd()}/cqrs/eventListeners/child/${
+            files[fileIndex]
+          }`);
           let eventHandler = new handler();
           let events = eventHandler.getEvents();
 

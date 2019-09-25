@@ -130,9 +130,10 @@ describe("get user image success", () => {
     controller.getImage(mockRequest, mockResponse, null).then(() => {
       // assert
       expect(mockResponse.sendFile).toHaveBeenCalled();
-      // expect(mockResponse.sendFile).toHaveBeenCalledWith("somewhere", {
-      //   root: "/usr/src/app"
-      // });
+      expect(mockResponse.sendFile).toHaveBeenCalledWith(
+        "somewhere",
+        jasmine.anything()
+      );
       done();
     });
   });

@@ -1,7 +1,7 @@
 const knex = require("../../knex");
 const Redis = require("ioredis");
 const redis = new Redis(process.env.REDIS_URL);
-const finder = require("../../../utilities").keys;
+const finder = require("../../../utils/keys");
 
 const Handler = {
   /*
@@ -20,7 +20,7 @@ const Handler = {
 
   getReportUpvotersCount(id) {
     return redis.scard(`RMS:report:${id}:upvoters`).catch(e => {
-      throw e;
+      return Promise.reject(e);
     });
   },
 
@@ -28,7 +28,7 @@ const Handler = {
     return redis
       .sismember(`RMS:report:${reportId}:upvoters`, userId)
       .catch(e => {
-        throw e;
+        return Promise.reject(e);
       });
   },
 
@@ -61,7 +61,7 @@ const Handler = {
         return redis.hgetall(key);
       })
       .catch(e => {
-        throw e;
+        return Promise.reject(e);
       });
   },
 

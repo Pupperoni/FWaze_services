@@ -9,19 +9,24 @@ function CommonAggregateHandler(eventStoreHelper) {
     // save aggregate handler instances
     initialzeAggregateHandlers() {
       // scan all files in the aggregate helpers directory
-      fs.readdir(`/usr/src/app/cqrs/aggregateHelpers/child`, (err, files) => {
-        for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
-          // get aggregate names from each file
-          const handler = require(`/usr/src/app/cqrs/aggregateHelpers/child/${files[fileIndex]}`);
-          let aggregateHandler = new handler(eventStoreHelper);
-          let aggregates = aggregateHandler.getAggregates();
+      fs.readdir(
+        `${process.cwd()}/cqrs/aggregateHelpers/child`,
+        (err, files) => {
+          for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
+            // get aggregate names from each file
+            const handler = require(`${process.cwd()}/cqrs/aggregateHelpers/child/${
+              files[fileIndex]
+            }`);
+            let aggregateHandler = new handler(eventStoreHelper);
+            let aggregates = aggregateHandler.getAggregates();
 
-          // save the aggregate handler with the aggregate name
-          aggregates.forEach(aggregateName => {
-            this.aggregateHandlerList[aggregateName] = aggregateHandler;
-          });
+            // save the aggregate handler with the aggregate name
+            aggregates.forEach(aggregateName => {
+              this.aggregateHandlerList[aggregateName] = aggregateHandler;
+            });
+          }
         }
-      });
+      );
     },
 
     // gets aggregate handler of corresponding aggregate name

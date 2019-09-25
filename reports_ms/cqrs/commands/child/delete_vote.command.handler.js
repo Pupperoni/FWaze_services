@@ -57,8 +57,8 @@ VoteDeletedCommandHandler.prototype.validate = function(payload) {
       if (!value) valid = value;
     });
 
-    if (valid) Promise.resolve(valid);
-    else Promise.reject(reasons);
+    if (valid) return Promise.resolve(valid);
+    else return Promise.reject(reasons);
   });
 };
 
@@ -69,8 +69,11 @@ VoteDeletedCommandHandler.prototype.performCommand = function(payload) {
     eventId: shortid.generate(),
     eventName: CONSTANTS.EVENTS.REPORT_VOTE_DELETED,
     aggregateName: CONSTANTS.AGGREGATES.REPORT_AGGREGATE_NAME,
-    aggregateID: payload.id,
-    payload: payload
+    aggregateID: payload.aggregateID,
+    payload: {
+      id: payload.id,
+      userId: payload.userId
+    }
   });
 
   return Promise.resolve(events);

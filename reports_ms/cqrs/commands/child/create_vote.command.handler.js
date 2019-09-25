@@ -69,7 +69,10 @@ VoteCreatedCommandHandler.prototype.performCommand = function(payload) {
     eventName: CONSTANTS.EVENTS.REPORT_VOTE_CREATED,
     aggregateName: CONSTANTS.AGGREGATES.REPORT_AGGREGATE_NAME,
     aggregateID: payload.id,
-    payload: payload
+    payload: {
+      id: payload.id,
+      userId: payload.userId
+    }
   });
 
   return Promise.resolve(events);
