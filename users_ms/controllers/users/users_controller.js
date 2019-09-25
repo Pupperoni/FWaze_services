@@ -283,7 +283,6 @@ const controller = function(queryHandler, CommonCommandHandler) {
           });
         })
         .catch(e => {
-          console.log(e);
           return res.status(400).json({ err: e });
         });
     }

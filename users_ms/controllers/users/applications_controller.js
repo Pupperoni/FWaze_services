@@ -27,7 +27,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
           return res.json({ data: results });
         })
         .catch(e => {
-          return res.status(400).json({ err: e });
+          return res.status(500).json({ err: e });
         });
     },
 
@@ -39,7 +39,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
           return res.json({ data: results });
         })
         .catch(e => {
-          return res.status(400).json({ err: e });
+          return res.status(500).json({ err: e });
         });
     },
 

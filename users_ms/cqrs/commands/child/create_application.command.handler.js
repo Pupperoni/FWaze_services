@@ -48,12 +48,15 @@ ApplicationCreatedCommandHandler.prototype.validate = function(payload) {
       else if (user.role != 0) {
         valid = false;
         reasons.push(CONSTANTS.ERRORS.USER_NOT_PERMITTED);
-      }
-
-      // if user exists and pending/approved - dont create
-      if (user.status && (user.status === 0 || user.status === 1)) {
-        valid = false;
-        reasons.push(CONSTANTS.ERRORS.DUPLICATE_APPLICATION);
+      } else {
+        // if user exists and pending/approved - dont create
+        if (
+          typeof user.status !== "undefined" &&
+          (user.status === 0 || user.status === 1)
+        ) {
+          valid = false;
+          reasons.push(CONSTANTS.ERRORS.DUPLICATE_APPLICATION);
+        }
       }
 
       if (valid) return Promise.resolve(valid);
@@ -69,8 +72,13 @@ ApplicationCreatedCommandHandler.prototype.performCommand = function(payload) {
     eventId: shortid.generate(),
     eventName: CONSTANTS.EVENTS.USER_APPLICATION_CREATED,
     aggregateName: CONSTANTS.AGGREGATES.USER_AGGREGATE_NAME,
-    aggregateID: payload.userId,
-    payload: payload
+    aggregateID: payload.aggregateID,
+    payload: {
+      id: payload.id,
+      userId: payload.userId,
+      userName: payload.userName,
+      timestamp: payload.timestamp
+    }
   });
 
   return Promise.resolve(events);

@@ -55,16 +55,21 @@ ApplicationRejectedCommandHandler.prototype.validate = function(payload) {
           return this.getAggregate(payload.userId);
         } else return Promise.reject(reasons);
       })
-      .then(application => {
-        // application does not exist; cannot reject
-        if (!application) {
+      .then(user => {
+        // user does not exist
+        if (!user) {
           valid = false;
-          reasons.push(CONSTANTS.APPLICATION_NOT_EXISTS);
+          reasons.push(CONSTANTS.ERRORS.USER_NOT_EXISTS);
+        }
+        // application does not exist
+        else if (typeof user.status === "undefined") {
+          valid = false;
+          reasons.push(CONSTANTS.ERRORS.APPLICATION_NOT_EXISTS);
         }
         // application not pending
-        else if (application.status !== 0) {
+        else if (user.status !== 0) {
           valid = false;
-          reasons.push(CONSTANTS.APPLICATION_NOT_EXISTS);
+          reasons.push(CONSTANTS.ERRORS.USER_NOT_PERMITTED);
         }
         if (valid) return Promise.resolve(valid);
         else return Promise.reject(reasons);
@@ -80,7 +85,10 @@ ApplicationRejectedCommandHandler.prototype.performCommand = function(payload) {
     eventName: CONSTANTS.EVENTS.USER_APPLICATION_REJECTED,
     aggregateName: CONSTANTS.AGGREGATES.USER_AGGREGATE_NAME,
     aggregateID: payload.userId,
-    payload: payload
+    payload: {
+      id: payload.id,
+      userId: payload.userId
+    }
   });
 
   return Promise.resolve(events);
