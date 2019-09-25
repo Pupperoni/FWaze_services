@@ -65,7 +65,14 @@ CommentCreatedCommandHandler.prototype.performCommand = function(payload) {
     eventName: CONSTANTS.EVENTS.REPORT_COMMENT_CREATED,
     aggregateName: CONSTANTS.AGGREGATES.REPORT_AGGREGATE_NAME,
     aggregateID: payload.reportId,
-    payload: payload
+    payload: {
+      id: payload.id,
+      userId: payload.userId,
+      userName: payload.userName,
+      reportId: payload.reportId,
+      body: payload.body,
+      timestamp: payload.timestamp
+    }
   });
 
   return Promise.resolve(events);

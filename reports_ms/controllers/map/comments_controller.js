@@ -37,14 +37,15 @@ const controller = function(queryHandler, CommonCommandHandler) {
 
     // Get comments by report id (list down all comments on a report)
     getCommentsByReportId(req, res, next) {
-      queryHandler
+      return queryHandler
         .getCommentsByReportId(req.params.id, req.query.page)
         .then(results => {
-          if (results.length == 0)
+          if (results.length === 0) {
             return res.json({
               msg: CONSTANTS.ERRORS.COMMENTS_NOT_FOUND,
               data: []
             });
+          }
           return res.json({ data: results });
         })
         .catch(e => {
