@@ -7,7 +7,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
     //  Query responsibility
     //
 
-    // Get all ads
+    // Get all ads (deprecated)
     getAllAds(req, res, next) {
       queryHandler
         .getAds()
@@ -25,7 +25,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
       queryHandler
         .getAdById(req.params.id)
         .then(result => {
-          if (!result)
+          if (!result.id)
             return res
               .status(400)
               .json({ msg: CONSTANTS.ERRORS.AD_NOT_EXISTS });
@@ -45,7 +45,6 @@ const controller = function(queryHandler, CommonCommandHandler) {
       queryHandler
         .getAdsByBorder(left, right, bottom, top)
         .then(results => {
-          // console.log(results);
           return res.json({ ads: results });
         })
         .catch(e => {
@@ -76,10 +75,10 @@ const controller = function(queryHandler, CommonCommandHandler) {
         root: "/usr/src/app/"
       };
       // scan to get keys
-      queryHandler
+      return queryHandler
         .getAdById(req.params.id)
         .then(ad => {
-          if (ad) {
+          if (ad.id) {
             if (ad.photoPath) return res.sendFile(ad.photoPath, options);
             else return res.json({ msg: CONSTANTS.ERRORS.FILE_NOT_FOUND });
           } else
@@ -124,7 +123,6 @@ const controller = function(queryHandler, CommonCommandHandler) {
             });
         })
         .catch(e => {
-          console.log(e);
           return res.status(400).json({ err: e });
         });
     }

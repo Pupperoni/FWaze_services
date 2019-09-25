@@ -59,8 +59,16 @@ AdCreatedCommandHandler.prototype.performCommand = function(payload) {
     eventId: shortid.generate(),
     eventName: CONSTANTS.EVENTS.AD_CREATED,
     aggregateName: CONSTANTS.AGGREGATES.AD_AGGREGATE_NAME,
-    aggregateID: payload.id,
-    payload: payload
+    aggregateID: payload.aggregateID,
+    payload: {
+      id: payload.id,
+      userId: payload.userId,
+      userName: payload.userName,
+      caption: payload.caption,
+      latitude: payload.latitude.toString(),
+      longitude: payload.longitude.toString(),
+      location: payload.location
+    }
   });
   // check if file is uploaded
   if (payload.file) events[0].payload.photoPath = payload.file.path;
