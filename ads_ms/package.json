@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "nodemon app.js",
-    "migrate": "node node_modules/db-migrate/bin/db-migrate up"
+    "migrate": "node node_modules/db-migrate/bin/db-migrate up",
+    "test": "jasmine"
   },
   "dependencies": {
     "@types/socket.io": "^2.1.2",
