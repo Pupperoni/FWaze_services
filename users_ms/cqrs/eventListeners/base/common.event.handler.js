@@ -33,21 +33,20 @@ function CommonEventHandler(broker, CommonCommandHandler) {
     // save event handler instances
     initialzeEventHandlers() {
       // scan all files in the event handlers directory
-      fs.readdir(`${process.cwd()}/cqrs/eventListeners/child`, (err, files) => {
-        for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
-          // get events names from each file
-          const handler = require(`${process.cwd()}/cqrs/eventListeners/child/${
-            files[fileIndex]
-          }`);
-          let eventHandler = new handler();
-          let events = eventHandler.getEvents();
+      let files = fs.readdirSync(`${process.cwd()}/cqrs/eventListeners/child`);
+      for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
+        // get events names from each file
+        const handler = require(`${process.cwd()}/cqrs/eventListeners/child/${
+          files[fileIndex]
+        }`);
+        let eventHandler = new handler();
+        let events = eventHandler.getEvents();
 
-          // save the event handler with the event name
-          events.forEach(event => {
-            this.eventHandlerList[event] = eventHandler;
-          });
-        }
-      });
+        // save the event handler with the event name
+        events.forEach(event => {
+          this.eventHandlerList[event] = eventHandler;
+        });
+      }
 
       broker.eventSubscribe((event, offset) => {
         return handler.enqueueEvent(event, offset);

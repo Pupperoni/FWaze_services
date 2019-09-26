@@ -11,6 +11,7 @@ describe("approve user application", () => {
   let mockResponse;
   let mockBroker;
   let mockEventStore;
+  let aggregateHelpers;
 
   beforeEach(() => {
     mockBroker = jasmine.createSpyObj("mockBroker", [
@@ -109,12 +110,14 @@ describe("approve user application", () => {
       return Promise.resolve(1);
     });
 
+    aggregateHelpers = CommonAggregateHandler(mockEventStore);
+
     controller = applicationController(
       null,
       CommonCommandHandler(
-        WriteRepo(mockEventStore, CommonAggregateHandler(mockEventStore)),
+        WriteRepo(mockEventStore, aggregateHelpers),
         mockBroker,
-        CommonAggregateHandler(mockEventStore)
+        aggregateHelpers
       )
     );
 
@@ -151,10 +154,10 @@ describe("approve user application", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.rejectApplication(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.rejectApplication(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   /*
@@ -181,10 +184,10 @@ describe("approve user application", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.rejectApplication(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.rejectApplication(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should return error 400 when admin role invalid", done => {
@@ -208,10 +211,10 @@ describe("approve user application", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.rejectApplication(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.rejectApplication(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should return error 400 when applicant does not exist", done => {
@@ -235,10 +238,10 @@ describe("approve user application", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.rejectApplication(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.rejectApplication(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should return error 400 when application does not exist", done => {
@@ -262,10 +265,10 @@ describe("approve user application", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.rejectApplication(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.rejectApplication(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should return error 400 when application already approved", done => {
@@ -289,10 +292,10 @@ describe("approve user application", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.rejectApplication(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.rejectApplication(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should return error 400 when application already rejected", done => {
@@ -316,10 +319,10 @@ describe("approve user application", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.rejectApplication(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.rejectApplication(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   /*
@@ -355,9 +358,9 @@ describe("approve user application", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.rejectApplication(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.rejectApplication(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 });

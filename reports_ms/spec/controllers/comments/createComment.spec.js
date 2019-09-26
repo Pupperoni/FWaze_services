@@ -11,6 +11,7 @@ describe("create comment", () => {
   let mockResponse;
   let mockBroker;
   let mockEventStore;
+  let aggregateHelpers;
 
   beforeEach(() => {
     mockBroker = jasmine.createSpyObj("mockBroker", [
@@ -55,12 +56,14 @@ describe("create comment", () => {
       return Promise.resolve(1);
     });
 
+    aggregateHelpers = CommonAggregateHandler(mockEventStore);
+
     controller = commentsController(
       null,
       CommonCommandHandler(
-        WriteRepo(mockEventStore, CommonAggregateHandler(mockEventStore)),
+        WriteRepo(mockEventStore, aggregateHelpers),
         mockBroker,
-        CommonAggregateHandler(mockEventStore)
+        aggregateHelpers
       )
     );
 
@@ -103,10 +106,10 @@ describe("create comment", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createComment(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createComment(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   /*
@@ -135,10 +138,10 @@ describe("create comment", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createComment(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createComment(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should return error 400 when report does not exist", done => {
@@ -164,10 +167,10 @@ describe("create comment", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createComment(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createComment(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   /*
@@ -209,9 +212,9 @@ describe("create comment", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createComment(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createComment(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 });

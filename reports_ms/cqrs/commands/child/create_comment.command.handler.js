@@ -52,7 +52,7 @@ CommentCreatedCommandHandler.prototype.validate = function(payload) {
     });
 
   return Promise.all([reportCheck, userCheck]).then(results => {
-    if (valid) return Promise.resolve(valid);
+    if (valid) return Promise.resolve(payload);
     else return Promise.reject(reasons);
   });
 };

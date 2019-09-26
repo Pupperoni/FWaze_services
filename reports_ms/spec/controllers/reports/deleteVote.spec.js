@@ -11,6 +11,7 @@ describe("delete vote", () => {
   let mockResponse;
   let mockBroker;
   let mockEventStore;
+  let aggregateHelpers;
 
   beforeEach(() => {
     mockBroker = jasmine.createSpyObj("mockBroker", [
@@ -53,12 +54,14 @@ describe("delete vote", () => {
       return Promise.resolve(1);
     });
 
+    aggregateHelpers = CommonAggregateHandler(mockEventStore);
+
     controller = reportsController(
       null,
       CommonCommandHandler(
-        WriteRepo(mockEventStore, CommonAggregateHandler(mockEventStore)),
+        WriteRepo(mockEventStore, aggregateHelpers),
         mockBroker,
-        CommonAggregateHandler(mockEventStore)
+        aggregateHelpers
       )
     );
 
@@ -94,10 +97,10 @@ describe("delete vote", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.deleteVote(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.deleteVote(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   /*
@@ -123,10 +126,10 @@ describe("delete vote", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.deleteVote(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.deleteVote(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should return error 400 when report does not exist", done => {
@@ -149,10 +152,10 @@ describe("delete vote", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.deleteVote(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.deleteVote(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should return error 400 when user and report does not exist", done => {
@@ -177,10 +180,10 @@ describe("delete vote", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.deleteVote(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.deleteVote(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   /*
@@ -213,9 +216,9 @@ describe("delete vote", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.deleteVote(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.deleteVote(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 });

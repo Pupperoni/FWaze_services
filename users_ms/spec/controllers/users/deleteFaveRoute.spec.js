@@ -11,6 +11,7 @@ describe("delete user route", () => {
   let mockResponse;
   let mockBroker;
   let mockEventStore;
+  let aggregateHelpers;
 
   beforeEach(() => {
     mockBroker = jasmine.createSpyObj("mockBroker", [
@@ -55,12 +56,13 @@ describe("delete user route", () => {
       return Promise.resolve(1);
     });
 
+    aggregateHelpers = CommonAggregateHandler(mockEventStore);
     controller = usersController(
       null,
       CommonCommandHandler(
-        WriteRepo(mockEventStore, CommonAggregateHandler(mockEventStore)),
+        WriteRepo(mockEventStore, aggregateHelpers),
         mockBroker,
-        CommonAggregateHandler(mockEventStore)
+        aggregateHelpers
       )
     );
 
@@ -97,10 +99,11 @@ describe("delete user route", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.deleteFaveRoute(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.deleteFaveRoute(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+
+    // }, 2000);
   });
 
   /*
@@ -126,10 +129,11 @@ describe("delete user route", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.deleteFaveRoute(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.deleteFaveRoute(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+
+    // }, 2000);
   });
 
   /*
@@ -162,9 +166,10 @@ describe("delete user route", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.deleteFaveRoute(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.deleteFaveRoute(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+
+    // }, 2000);
   });
 });

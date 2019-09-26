@@ -11,6 +11,7 @@ describe("create ad", () => {
   let mockResponse;
   let mockBroker;
   let mockEventStore;
+  let aggregateHelpers;
 
   beforeEach(() => {
     mockBroker = jasmine.createSpyObj("mockBroker", [
@@ -66,12 +67,14 @@ describe("create ad", () => {
       return Promise.resolve(1);
     });
 
+    aggregateHelpers = CommonAggregateHandler(mockEventStore);
+
     controller = adsController(
       null,
       CommonCommandHandler(
-        WriteRepo(mockEventStore, CommonAggregateHandler(mockEventStore)),
+        WriteRepo(mockEventStore, aggregateHelpers),
         mockBroker,
-        CommonAggregateHandler(mockEventStore)
+        aggregateHelpers
       )
     );
 
@@ -116,10 +119,10 @@ describe("create ad", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createAd(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createAd(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should return status 200 with correct message with file", done => {
@@ -161,10 +164,10 @@ describe("create ad", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createAd(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createAd(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   /*
@@ -194,10 +197,10 @@ describe("create ad", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createAd(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createAd(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should return error 400 when user role invalid", done => {
@@ -224,10 +227,10 @@ describe("create ad", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createAd(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createAd(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   /*
@@ -269,10 +272,10 @@ describe("create ad", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createAd(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createAd(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should send event with correct event name with file", done => {
@@ -315,9 +318,9 @@ describe("create ad", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createAd(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createAd(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 });

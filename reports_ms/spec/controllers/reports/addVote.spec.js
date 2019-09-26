@@ -11,6 +11,7 @@ describe("create vote", () => {
   let mockResponse;
   let mockBroker;
   let mockEventStore;
+  let aggregateHelpers;
 
   beforeEach(() => {
     mockBroker = jasmine.createSpyObj("mockBroker", [
@@ -53,12 +54,14 @@ describe("create vote", () => {
       return Promise.resolve(1);
     });
 
+    aggregateHelpers = CommonAggregateHandler(mockEventStore);
+
     controller = reportsController(
       null,
       CommonCommandHandler(
-        WriteRepo(mockEventStore, CommonAggregateHandler(mockEventStore)),
+        WriteRepo(mockEventStore, aggregateHelpers),
         mockBroker,
-        CommonAggregateHandler(mockEventStore)
+        aggregateHelpers
       )
     );
 
@@ -94,10 +97,10 @@ describe("create vote", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.addVote(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.addVote(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   /*
@@ -123,10 +126,7 @@ describe("create vote", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.addVote(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.addVote(mockRequest, mockResponse, null);
   });
 
   it("should return error 400 when report does not exist", done => {
@@ -149,10 +149,8 @@ describe("create vote", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.addVote(mockRequest, mockResponse, null);
-    }, 2000);
+    // setTimeout(() => {
+    controller.addVote(mockRequest, mockResponse, null);
   });
 
   it("should return error 400 when user and report does not exist", done => {
@@ -177,10 +175,8 @@ describe("create vote", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.addVote(mockRequest, mockResponse, null);
-    }, 2000);
+    //   // set timer to give init time
+    controller.addVote(mockRequest, mockResponse, null);
   });
 
   /*
@@ -213,9 +209,7 @@ describe("create vote", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.addVote(mockRequest, mockResponse, null);
-    }, 2000);
+    // }, 2000);
+    controller.addVote(mockRequest, mockResponse, null);
   });
 });

@@ -111,6 +111,7 @@ describe("update user broker", () => {
   let mockResponse;
   let mockBroker;
   let mockEventStore;
+  let aggregateHelpers;
 
   beforeEach(() => {
     mockBroker = jasmine.createSpyObj("mockBroker", [
@@ -169,12 +170,14 @@ describe("update user broker", () => {
       }
     });
 
+    aggregateHelpers = CommonAggregateHandler(mockEventStore);
+
     controller = usersController(
       mockQueryHandler,
       CommonCommandHandler(
-        WriteRepo(mockEventStore, CommonAggregateHandler(mockEventStore)),
+        WriteRepo(mockEventStore, aggregateHelpers),
         mockBroker,
-        CommonAggregateHandler(mockEventStore)
+        aggregateHelpers
       )
     );
 
@@ -214,10 +217,10 @@ describe("update user broker", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.updateUser(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.updateUser(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should return status 200 with file", done => {
@@ -255,10 +258,10 @@ describe("update user broker", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.updateUser(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.updateUser(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should return status 200 with home", done => {
@@ -297,10 +300,10 @@ describe("update user broker", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.updateUser(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.updateUser(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should return status 200 with work", done => {
@@ -339,10 +342,10 @@ describe("update user broker", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.updateUser(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.updateUser(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   /*
@@ -369,10 +372,10 @@ describe("update user broker", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.updateUser(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.updateUser(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   /*
@@ -402,10 +405,10 @@ describe("update user broker", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.updateUser(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.updateUser(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should send event with file path", done => {
@@ -436,10 +439,10 @@ describe("update user broker", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.updateUser(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.updateUser(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should send event with home", done => {
@@ -477,10 +480,10 @@ describe("update user broker", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.updateUser(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.updateUser(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should send event with work", done => {
@@ -518,13 +521,14 @@ describe("update user broker", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.updateUser(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.updateUser(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should send event with home, work and file", done => {
+    let counter = 0;
     // arrange
     mockBroker.publish.and.callFake((topic, message, aggregateID, offset) => {
       if (topic === CONSTANTS.TOPICS.USER_COMMAND) {
@@ -535,12 +539,17 @@ describe("update user broker", () => {
         topic === CONSTANTS.TOPICS.USER_EVENT &&
         message.eventName === CONSTANTS.EVENTS.USER_UPDATED
       ) {
+        counter += 1;
         // assert
         expect(message.payload.avatarPath).toEqual("/path/to/file");
+        if (counter === 3) {
+          done();
+        }
       } else if (
         topic === CONSTANTS.TOPICS.USER_EVENT &&
         message.eventName === CONSTANTS.EVENTS.USER_HOME_UPDATED
       ) {
+        counter += 1;
         // assert
         expect(message.payload).toEqual({
           id: "someId",
@@ -548,10 +557,14 @@ describe("update user broker", () => {
           longitude: -48.01498,
           address: "lol place some"
         });
+        if (counter === 3) {
+          done();
+        }
       } else if (
         topic === CONSTANTS.TOPICS.USER_EVENT &&
         message.eventName === CONSTANTS.EVENTS.USER_WORK_UPDATED
       ) {
+        counter += 1;
         // assert
         expect(message.payload).toEqual({
           id: "someId",
@@ -559,7 +572,9 @@ describe("update user broker", () => {
           longitude: 15.17846,
           address: "some place lol"
         });
-        done();
+        if (counter === 3) {
+          done();
+        }
       }
     });
 
@@ -582,9 +597,9 @@ describe("update user broker", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.updateUser(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.updateUser(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 });

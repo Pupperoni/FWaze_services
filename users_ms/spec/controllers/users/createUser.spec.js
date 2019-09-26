@@ -102,6 +102,7 @@ describe("create user broker", () => {
   let mockResponse;
   let mockBroker;
   let mockEventStore;
+  let aggregateHandler;
 
   beforeEach(() => {
     mockBroker = jasmine.createSpyObj("mockBroker", [
@@ -150,12 +151,14 @@ describe("create user broker", () => {
       } else return Promise.resolve([]);
     });
 
+    aggregateHandler = CommonAggregateHandler(mockEventStore);
+
     controller = usersController(
       mockQueryHandler,
       CommonCommandHandler(
-        WriteRepo(mockEventStore, CommonAggregateHandler(mockEventStore)),
+        WriteRepo(mockEventStore, aggregateHandler),
         mockBroker,
-        CommonAggregateHandler(mockEventStore)
+        aggregateHandler
       )
     );
 
@@ -195,10 +198,11 @@ describe("create user broker", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createUser(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createUser(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+
+    // }, 2000);
   });
 
   /*
@@ -227,10 +231,11 @@ describe("create user broker", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createUser(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createUser(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+
+    // }, 2000);
   });
 
   it("should return error 400 with non matching passwords", done => {
@@ -257,10 +262,11 @@ describe("create user broker", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createUser(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createUser(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+
+    // }, 2000);
   });
 
   /*
@@ -292,9 +298,10 @@ describe("create user broker", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createUser(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createUser(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+
+    // }, 2000);
   });
 });

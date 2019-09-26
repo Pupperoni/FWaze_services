@@ -11,6 +11,7 @@ describe("create report", () => {
   let mockResponse;
   let mockBroker;
   let mockEventStore;
+  let aggregateHelpers;
 
   beforeEach(() => {
     mockBroker = jasmine.createSpyObj("mockBroker", [
@@ -55,12 +56,14 @@ describe("create report", () => {
       return Promise.resolve(1);
     });
 
+    aggregateHelpers = CommonAggregateHandler(mockEventStore);
+
     controller = reportsController(
       null,
       CommonCommandHandler(
-        WriteRepo(mockEventStore, CommonAggregateHandler(mockEventStore)),
+        WriteRepo(mockEventStore, aggregateHelpers),
         mockBroker,
-        CommonAggregateHandler(mockEventStore)
+        aggregateHelpers
       )
     );
 
@@ -105,10 +108,10 @@ describe("create report", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createReport(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createReport(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should return status 200 with correct message with file", done => {
@@ -150,10 +153,10 @@ describe("create report", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createReport(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createReport(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   /*
@@ -183,10 +186,10 @@ describe("create report", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createReport(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createReport(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should return error 400 when report type invalid", done => {
@@ -213,10 +216,10 @@ describe("create report", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createReport(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createReport(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   /*
@@ -258,10 +261,10 @@ describe("create report", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createReport(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createReport(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 
   it("should send event with correct event name with file", done => {
@@ -304,9 +307,9 @@ describe("create report", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createReport(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createReport(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
   });
 });

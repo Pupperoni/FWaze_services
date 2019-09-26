@@ -22,21 +22,20 @@ function CommonCommandHandler(writeRepo, broker, CommonAggregate) {
     // save command handler instances
     initialzeCommandHandlers() {
       // scan all files in the commands directory
-      fs.readdir(`${process.cwd()}/cqrs/commands/child`, (err, files) => {
-        for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
-          // get command names from each file
-          const handler = require(`${process.cwd()}/cqrs/commands/child/${
-            files[fileIndex]
-          }`);
-          let commandHandler = new handler(CommonAggregate);
-          let commands = commandHandler.getCommands();
+      let files = fs.readdirSync(`${process.cwd()}/cqrs/commands/child`);
+      for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
+        // get command names from each file
+        const handler = require(`${process.cwd()}/cqrs/commands/child/${
+          files[fileIndex]
+        }`);
+        let commandHandler = new handler(CommonAggregate);
+        let commands = commandHandler.getCommands();
 
-          // save the command handler with the command name
-          commands.forEach(command => {
-            this.commandHandlerList[command] = commandHandler;
-          });
-        }
-      });
+        // save the command handler with the command name
+        commands.forEach(command => {
+          this.commandHandlerList[command] = commandHandler;
+        });
+      }
 
       // Wait for messages
       broker.commandSubscribe(message => {
@@ -54,7 +53,7 @@ function CommonCommandHandler(writeRepo, broker, CommonAggregate) {
         // run the functions
         return commandHandler
           .validate(payload)
-          .then(valid => {
+          .then(data => {
             // Publish command and payload to kafka
             console.log(
               `[COMMON COMMAND HANDLER] Sending command ${commandName} to broker`
@@ -69,7 +68,7 @@ function CommonCommandHandler(writeRepo, broker, CommonAggregate) {
               formattedPayload,
               aggregateID
             );
-            return payload;
+            return data;
           })
           .catch(e => {
             return Promise.reject(e);

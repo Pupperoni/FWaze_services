@@ -47,7 +47,7 @@ ReportCreatedCommandHandler.prototype.validate = function(payload) {
           reasons.push(CONSTANTS.ERRORS.INVALID_REPORT_TYPE);
         }
 
-        if (valid) return Promise.resolve(valid);
+        if (valid) return Promise.resolve(payload);
         else return Promise.reject(reasons);
       })
   );

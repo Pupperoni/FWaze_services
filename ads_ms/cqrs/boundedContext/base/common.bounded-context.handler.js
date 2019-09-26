@@ -20,20 +20,20 @@ function CommonBoundedContextHandler(broker, writeRepo) {
     // save bounded context handler instances
     initialzeBoundedContextHandlers() {
       // scan all files in the boundedContext directory
-      fs.readdir(`/usr/src/app/cqrs/boundedContext/child`, (err, files) => {
-        for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
-          // get aggregate names from each file
-          const handler = require(`/usr/src/app/cqrs/boundedContext/child/${files[fileIndex]}`);
-          let boundedContextHandler = new handler(writeRepo);
-          let aggregates = boundedContextHandler.getAggregates();
+      let files = fs.readdirSync(`${process.cwd()}/cqrs/boundedContext/child`);
+      for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
+        // get aggregate names from each file
+        const handler = require(`${process.cwd()}/cqrs/boundedContext/child/${
+          files[fileIndex]
+        }`);
+        let boundedContextHandler = new handler(writeRepo);
+        let aggregates = boundedContextHandler.getAggregates();
 
-          // save the handler with the aggregate name
-          aggregates.forEach(aggregate => {
-            this.boundedContextHandlerList[aggregate] = boundedContextHandler;
-          });
-        }
-      });
-
+        // save the handler with the aggregate name
+        aggregates.forEach(aggregate => {
+          this.boundedContextHandlerList[aggregate] = boundedContextHandler;
+        });
+      }
       broker.aggregateSubscribe(event => {
         console.log(
           "[COMMON BOUNDED CONTEXT HANDLER] Message received from User Microservice"

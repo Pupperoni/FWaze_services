@@ -38,7 +38,7 @@ UserWorkUpdatedCommandHandler.prototype.validate = function(payload) {
     valid = false;
     reasons.push(CONSTANTS.ERRORS.EMAIL_INVALID_FORMAT);
   }
-  if (valid) return Promise.resolve(valid);
+  if (valid) return Promise.resolve(payload);
   else return Promise.reject(reasons);
 };
 

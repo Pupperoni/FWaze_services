@@ -11,6 +11,7 @@ describe("create user route", () => {
   let mockResponse;
   let mockBroker;
   let mockEventStore;
+  let aggregateHelpers;
 
   beforeEach(() => {
     mockBroker = jasmine.createSpyObj("mockBroker", [
@@ -55,12 +56,14 @@ describe("create user route", () => {
       return Promise.resolve(1);
     });
 
+    aggregateHelpers = CommonAggregateHandler(mockEventStore);
+
     controller = usersController(
       null,
       CommonCommandHandler(
-        WriteRepo(mockEventStore, CommonAggregateHandler(mockEventStore)),
+        WriteRepo(mockEventStore, aggregateHelpers),
         mockBroker,
-        CommonAggregateHandler(mockEventStore)
+        aggregateHelpers
       )
     );
 
@@ -110,10 +113,11 @@ describe("create user route", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createFaveRoute(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createFaveRoute(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+
+    // }, 2000);
   });
 
   /*
@@ -145,10 +149,11 @@ describe("create user route", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createFaveRoute(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createFaveRoute(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+
+    // }, 2000);
   });
 
   /*
@@ -194,9 +199,10 @@ describe("create user route", () => {
     });
 
     // act
-    setTimeout(() => {
-      // set timer to give init time
-      controller.createFaveRoute(mockRequest, mockResponse, null);
-    }, 2000);
+    controller.createFaveRoute(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+
+    // }, 2000);
   });
 });

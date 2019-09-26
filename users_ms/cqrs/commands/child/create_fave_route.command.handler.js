@@ -39,7 +39,7 @@ RouteCreatedCommandHandler.prototype.validate = function(payload) {
       }
 
       if (valid) {
-        return Promise.resolve(valid);
+        return Promise.resolve(payload);
       } else return Promise.reject(reasons);
     })
   );

@@ -38,7 +38,7 @@ RouteDeletedCommandHandler.prototype.validate = function(payload) {
         reasons.push(CONSTANTS.ERRORS.USER_NOT_EXISTS);
       }
       if (valid) {
-        return Promise.resolve(valid);
+        return Promise.resolve(payload);
       } else return Promise.reject(reasons);
     })
   );
