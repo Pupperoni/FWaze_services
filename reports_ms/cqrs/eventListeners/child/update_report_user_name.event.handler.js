@@ -31,7 +31,6 @@ ReportUserNameUpdatedEventHandler.prototype.performEvent = function(
     "[ACTUAL EVENT HANDLER] event received: report user name updated"
   );
   reportQueryHandler.updateReportUserName(event.payload);
-  // TODO - separate comment update to separate event handler
   commentQueryHandler.updateCommentUserName(event.payload);
 
   // create new commands
