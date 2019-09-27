@@ -55,7 +55,7 @@ describe("update user", () => {
   /*
    * Test error response
    */
-  it("should return error 400 with conflicting username", done => {
+  it("should return error 409 with conflicting username", done => {
     // arrange
     mockRequest = httpMock.createRequest({
       method: "PUT",
@@ -68,7 +68,7 @@ describe("update user", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(409);
       expect(mockResponse._getJSONData()).toEqual({
         err: CONSTANTS.ERRORS.USERNAME_TAKEN
       });
@@ -79,7 +79,7 @@ describe("update user", () => {
     controller.updateUser(mockRequest, mockResponse, null);
   });
 
-  it("should return error 400 with conflicting email", done => {
+  it("should return error 409 with conflicting email", done => {
     // arrange
     mockRequest = httpMock.createRequest({
       method: "PUT",
@@ -92,7 +92,7 @@ describe("update user", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(409);
       expect(mockResponse._getJSONData()).toEqual({
         err: CONSTANTS.ERRORS.EMAIL_TAKEN
       });

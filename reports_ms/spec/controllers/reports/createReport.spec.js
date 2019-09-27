@@ -162,7 +162,7 @@ describe("create report", () => {
   /*
    * test validate
    */
-  it("should return error 400 when user does not exist", done => {
+  it("should return error 401 when user does not exist", done => {
     // arrange
     mockRequest = httpMock.createRequest({
       method: "POST",
@@ -178,7 +178,7 @@ describe("create report", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(401);
       expect(mockResponse._getJSONData()).toEqual({
         err: [CONSTANTS.ERRORS.USER_NOT_EXISTS]
       });

@@ -32,7 +32,7 @@ describe("get report by id", () => {
     controller = reportsController(mockQueryHandler, null);
   });
 
-  it("should return 400 when report does not exist", done => {
+  it("should return 404 when report does not exist", done => {
     // arrange
     mockQueryHandler.getReportById.and.callFake(id => {
       return Promise.resolve({});
@@ -40,7 +40,7 @@ describe("get report by id", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(404);
       expect(JSON.parse(mockResponse._getData())).toEqual({
         msg: CONSTANTS.ERRORS.REPORT_NOT_EXISTS
       });

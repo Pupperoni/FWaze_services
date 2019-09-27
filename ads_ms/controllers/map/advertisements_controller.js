@@ -27,7 +27,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
         .then(result => {
           if (!result.id)
             return res
-              .status(400)
+              .status(404)
               .json({ msg: CONSTANTS.ERRORS.AD_NOT_EXISTS });
           return res.json({ ad: result });
         })
@@ -45,7 +45,9 @@ const controller = function(queryHandler, CommonCommandHandler) {
       queryHandler
         .getAdsByBorder(left, right, bottom, top)
         .then(results => {
-          return res.json({ ads: results });
+          if (results.length === 0)
+            return res.status(204).json({ ads: results });
+          else return res.json({ ads: results });
         })
         .catch(e => {
           return res.status(500).json({ err: e });
@@ -80,10 +82,13 @@ const controller = function(queryHandler, CommonCommandHandler) {
         .then(ad => {
           if (ad.id) {
             if (ad.photoPath) return res.sendFile(ad.photoPath, options);
-            else return res.json({ msg: CONSTANTS.ERRORS.FILE_NOT_FOUND });
+            else
+              return res
+                .status(204)
+                .json({ msg: CONSTANTS.ERRORS.FILE_NOT_FOUND });
           } else
             return res
-              .status(400)
+              .status(404)
               .json({ msg: CONSTANTS.ERRORS.AD_NOT_EXISTS });
         })
         .catch(e => {
@@ -123,7 +128,12 @@ const controller = function(queryHandler, CommonCommandHandler) {
             });
         })
         .catch(e => {
-          return res.status(400).json({ err: e });
+          let status;
+          if (e.includes(CONSTANTS.ERRORS.USER_NOT_EXISTS)) status = 401;
+          else if (e.includes(CONSTANTS.ERRORS.USER_NOT_PERMITTED))
+            status = 403;
+          else status = 400;
+          return res.status(status).json({ err: e });
         });
     }
   };

@@ -42,7 +42,7 @@ describe("create user", () => {
     controller = usersController(mockQueryHandler, null);
   });
 
-  it("should return error 400 with existing username", done => {
+  it("should return error 409 with existing username", done => {
     // arrange
     mockRequest = httpMock.createRequest({
       method: "POST",
@@ -57,7 +57,7 @@ describe("create user", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(409);
       expect(mockResponse._getJSONData()).toEqual({
         err: CONSTANTS.ERRORS.USERNAME_TAKEN
       });
@@ -68,7 +68,7 @@ describe("create user", () => {
     controller.createUser(mockRequest, mockResponse, null);
   });
 
-  it("should return error 400 with existing email", done => {
+  it("should return error 409 with existing email", done => {
     // arrange
     mockRequest = httpMock.createRequest({
       method: "POST",
@@ -83,7 +83,7 @@ describe("create user", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(409);
       expect(mockResponse._getJSONData()).toEqual({
         err: CONSTANTS.ERRORS.EMAIL_TAKEN
       });

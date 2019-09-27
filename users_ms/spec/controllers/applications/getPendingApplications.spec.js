@@ -18,7 +18,7 @@ describe("get application by user id", () => {
     controller = applicationController(mockQueryHandler, null);
   });
 
-  it("should return 200 with empty data when no applications exist", done => {
+  it("should return 204 with empty data when no applications exist", done => {
     // arrange
     mockQueryHandler.getPendingApplications.and.callFake(() => {
       return Promise.resolve([]);
@@ -26,7 +26,7 @@ describe("get application by user id", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(200);
+      expect(mockResponse.statusCode).toEqual(204);
       expect(JSON.parse(mockResponse._getData())).toEqual({ data: [] });
       done();
     });
@@ -35,7 +35,7 @@ describe("get application by user id", () => {
     controller.getPendingApplications(null, mockResponse, null);
   });
 
-  it("should return error 500", done => {
+  it("should return error 500 upon server error", done => {
     // arrange
     mockQueryHandler.getPendingApplications.and.callFake(() => {
       return Promise.reject("oops error");

@@ -25,7 +25,7 @@ describe("get ad by id", () => {
     controller = adsController(mockQueryHandler, null);
   });
 
-  it("should return 400 when ad does not exist", done => {
+  it("should return 404 when ad does not exist", done => {
     // arrange
     mockQueryHandler.getAdById.and.callFake(id => {
       return Promise.resolve({});
@@ -33,7 +33,7 @@ describe("get ad by id", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(404);
       expect(JSON.parse(mockResponse._getData())).toEqual({
         msg: CONSTANTS.ERRORS.AD_NOT_EXISTS
       });

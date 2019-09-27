@@ -12,7 +12,8 @@ const controller = function(queryHandler, CommonCommandHandler) {
       queryHandler
         .getApplicationByUserId(req.params.id)
         .then(result => {
-          return res.json({ data: result });
+          if (!result) return res.status(204).json({ data: result });
+          else return res.json({ data: result });
         })
         .catch(e => {
           return res.status(500).json({ err: e });
@@ -24,7 +25,9 @@ const controller = function(queryHandler, CommonCommandHandler) {
       queryHandler
         .getAllApplications()
         .then(results => {
-          return res.json({ data: results });
+          if (results.length === 0)
+            return res.status(204).json({ data: results });
+          else return res.json({ data: results });
         })
         .catch(e => {
           return res.status(500).json({ err: e });
@@ -36,7 +39,9 @@ const controller = function(queryHandler, CommonCommandHandler) {
       queryHandler
         .getPendingApplications()
         .then(results => {
-          return res.json({ data: results });
+          if (results.length === 0)
+            return res.status(204).json({ data: results });
+          else return res.json({ data: results });
         })
         .catch(e => {
           return res.status(500).json({ err: e });
@@ -68,7 +73,14 @@ const controller = function(queryHandler, CommonCommandHandler) {
           });
         })
         .catch(e => {
-          return res.status(400).json({ err: e });
+          let status;
+          if (e.includes(CONSTANTS.ERRORS.USER_NOT_EXISTS)) status = 404;
+          else if (e.includes(CONSTANTS.ERRORS.USER_NOT_PERMITTED))
+            status = 403;
+          else if (e.includes(CONSTANTS.ERRORS.DUPLICATE_APPLICATION))
+            status = 409;
+          else status = 400;
+          return res.status(status).json({ err: e });
         });
     },
 
@@ -95,7 +107,14 @@ const controller = function(queryHandler, CommonCommandHandler) {
           });
         })
         .catch(e => {
-          return res.status(400).json({ err: e });
+          let status;
+          if (e.includes(CONSTANTS.ERRORS.USER_NOT_PERMITTED)) status = 403;
+          else if (e.includes(CONSTANTS.ERRORS.APPLICATION_NOT_EXISTS))
+            status = 404;
+          else if (e.includes(CONSTANTS.ERRORS.DUPLICATE_APPLICATION))
+            status = 409;
+          else status = 400;
+          return res.status(status).json({ err: e });
         });
     },
 
@@ -122,7 +141,15 @@ const controller = function(queryHandler, CommonCommandHandler) {
           });
         })
         .catch(e => {
-          return res.status(400).json({ err: e });
+          let status;
+          if (e.includes(CONSTANTS.ERRORS.USER_NOT_PERMITTED)) status = 403;
+          else if (e.includes(CONSTANTS.ERRORS.USER_NOT_EXISTS)) status = 404;
+          else if (e.includes(CONSTANTS.ERRORS.APPLICATION_NOT_EXISTS))
+            status = 404;
+          else if (e.includes(CONSTANTS.ERRORS.DUPLICATE_APPLICATION))
+            status = 409;
+          else status = 400;
+          return res.status(status).json({ err: e });
         });
     }
   };

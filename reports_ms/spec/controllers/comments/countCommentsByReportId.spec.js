@@ -26,7 +26,7 @@ describe("count comments by report id", () => {
     controller = commentsController(mockQueryHandler, null);
   });
 
-  it("should return status 200 with empty comments list", done => {
+  it("should return status 204 with empty comments list", done => {
     // arrange
     mockQueryHandler.countCommentsByReportId.and.callFake(id => {
       let data = {};
@@ -36,7 +36,7 @@ describe("count comments by report id", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(200);
+      expect(mockResponse.statusCode).toEqual(204);
       expect(mockResponse._getJSONData()).toEqual({
         data: 0
       });

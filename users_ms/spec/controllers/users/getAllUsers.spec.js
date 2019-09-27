@@ -18,7 +18,7 @@ describe("get all users", () => {
     controller = usersController(mockQueryHandler, null);
   });
 
-  it("should return error 400 with the correct message", done => {
+  it("should return error 404 when no users exist", done => {
     // arrange
     mockQueryHandler.getAllUsers.and.callFake(() => {
       return Promise.resolve([]);
@@ -26,7 +26,7 @@ describe("get all users", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(404);
       expect(JSON.parse(mockResponse._getData())).toEqual({
         msg: CONSTANTS.ERRORS.USER_NOT_EXISTS
       });
@@ -37,7 +37,7 @@ describe("get all users", () => {
     controller.getAllUsers(null, mockResponse, null);
   });
 
-  it("should return error 500", done => {
+  it("should return error 500 upon server error", done => {
     mockQueryHandler.getAllUsers.and.callFake(() => {
       return Promise.reject();
     });

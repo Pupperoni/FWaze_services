@@ -106,7 +106,7 @@ describe("delete vote", () => {
   /*
    * test validate
    */
-  it("should return error 400 when user does not exist", done => {
+  it("should return error 401 when user does not exist", done => {
     // arrange
     mockRequest = httpMock.createRequest({
       method: "POST",
@@ -118,7 +118,7 @@ describe("delete vote", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(401);
       expect(mockResponse._getJSONData()).toEqual({
         err: [CONSTANTS.ERRORS.USER_NOT_EXISTS]
       });
@@ -132,7 +132,7 @@ describe("delete vote", () => {
     // }, 2000);
   });
 
-  it("should return error 400 when report does not exist", done => {
+  it("should return error 404 when report does not exist", done => {
     // arrange
     mockRequest = httpMock.createRequest({
       method: "POST",
@@ -144,7 +144,7 @@ describe("delete vote", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(404);
       expect(mockResponse._getJSONData()).toEqual({
         err: [CONSTANTS.ERRORS.REPORT_NOT_EXISTS]
       });
@@ -158,7 +158,7 @@ describe("delete vote", () => {
     // }, 2000);
   });
 
-  it("should return error 400 when user and report does not exist", done => {
+  it("should return error 401 when user and report does not exist", done => {
     // arrange
     mockRequest = httpMock.createRequest({
       method: "POST",
@@ -170,7 +170,7 @@ describe("delete vote", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(401);
       expect(mockResponse._getJSONData().err).toContain(
         CONSTANTS.ERRORS.USER_NOT_EXISTS,
         CONSTANTS.ERRORS.REPORT_NOT_EXISTS

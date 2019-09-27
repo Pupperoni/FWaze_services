@@ -20,7 +20,7 @@ describe("get ad image", () => {
     });
   });
 
-  it("should return error 400 when ad does not exist", done => {
+  it("should return error 404 when ad does not exist", done => {
     // arrange
     mockQueryHandler.getAdById.and.callFake(() => {
       return Promise.resolve({});
@@ -28,7 +28,7 @@ describe("get ad image", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(404);
       expect(JSON.parse(mockResponse._getData())).toEqual({
         msg: CONSTANTS.ERRORS.AD_NOT_EXISTS
       });
@@ -58,7 +58,7 @@ describe("get ad image", () => {
     controller.getImage(mockRequest, mockResponse, null);
   });
 
-  it("should return status 200 with no existing file", done => {
+  it("should return status 204 with no existing file", done => {
     // arrange
     mockQueryHandler.getAdById.and.callFake(id => {
       const data = {
@@ -69,7 +69,7 @@ describe("get ad image", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(200);
+      expect(mockResponse.statusCode).toEqual(204);
       expect(mockResponse._getJSONData()).toEqual({
         msg: CONSTANTS.ERRORS.FILE_NOT_FOUND
       });

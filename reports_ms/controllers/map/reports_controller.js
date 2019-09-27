@@ -39,7 +39,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
         .then(result => {
           if (!result.id)
             return res
-              .status(400)
+              .status(404)
               .json({ msg: CONSTANTS.ERRORS.REPORT_NOT_EXISTS });
           // count number of votes in a report
           queryHandler.getReportUpvotersCount(req.params.id).then(count => {
@@ -115,7 +115,9 @@ const controller = function(queryHandler, CommonCommandHandler) {
           top
         )
         .then(results => {
-          return res.json({ reports: results });
+          if (results.length === 0)
+            return res.status(204).json({ reports: results });
+          else res.json({ reports: results });
         })
         .catch(e => {
           return res.status(500).json({ err: e });
@@ -150,7 +152,8 @@ const controller = function(queryHandler, CommonCommandHandler) {
       queryHandler
         .getReportUpvotersCount(req.params.id)
         .then(count => {
-          return res.json({ result: count });
+          if (count === 0) return res.status(204).json({ result: count });
+          else return res.json({ result: count });
         })
         .catch(e => {
           return res.status(500).json({ err: e });
@@ -162,6 +165,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
       queryHandler
         .getUserVotePair(req.params.reportId, req.params.userId)
         .then(result => {
+          if (!result) return res.status(204).json(result);
           return res.json(result);
         })
         .catch(e => {
@@ -180,10 +184,13 @@ const controller = function(queryHandler, CommonCommandHandler) {
           if (report.id) {
             if (report.photoPath)
               return res.sendFile(report.photoPath, options);
-            else return res.json({ msg: CONSTANTS.ERRORS.FILE_NOT_FOUND });
+            else
+              return res
+                .status(204)
+                .json({ msg: CONSTANTS.ERRORS.FILE_NOT_FOUND });
           } else
             return res
-              .status(400)
+              .status(404)
               .json({ msg: CONSTANTS.ERRORS.REPORT_NOT_EXISTS });
         })
         .catch(e => {
@@ -223,7 +230,12 @@ const controller = function(queryHandler, CommonCommandHandler) {
           });
         })
         .catch(e => {
-          return res.status(400).json({ err: e });
+          let status;
+          if (e.includes(CONSTANTS.ERRORS.USER_NOT_EXISTS)) status = 401;
+          else if (e.includes(CONSTANTS.ERRORS.INVALID_REPORT_TYPE))
+            status = 400;
+          else status = 400;
+          return res.status(status).json({ err: e });
         });
     },
 
@@ -246,7 +258,11 @@ const controller = function(queryHandler, CommonCommandHandler) {
           });
         })
         .catch(e => {
-          return res.status(400).json({ err: e });
+          let status;
+          if (e.includes(CONSTANTS.ERRORS.USER_NOT_EXISTS)) status = 401;
+          else if (e.includes(CONSTANTS.ERRORS.REPORT_NOT_EXISTS)) status = 404;
+          else status = 400;
+          return res.status(status).json({ err: e });
         });
     },
 
@@ -269,7 +285,11 @@ const controller = function(queryHandler, CommonCommandHandler) {
           });
         })
         .catch(e => {
-          return res.status(400).json({ err: e });
+          let status;
+          if (e.includes(CONSTANTS.ERRORS.USER_NOT_EXISTS)) status = 401;
+          else if (e.includes(CONSTANTS.ERRORS.REPORT_NOT_EXISTS)) status = 404;
+          else status = 400;
+          return res.status(status).json({ err: e });
         });
     }
   };

@@ -15,7 +15,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
         .then(results => {
           if (results.length === 0)
             return res
-              .status(400)
+              .status(404)
               .json({ msg: CONSTANTS.ERRORS.USER_NOT_EXISTS });
           return res.json({ users: results });
         })
@@ -31,7 +31,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
         .then(result => {
           if (!result.id)
             return res
-              .status(400)
+              .status(404)
               .json({ msg: CONSTANTS.ERRORS.USER_NOT_EXISTS });
           // Convert string role to int
           result.role = parseInt(result.role);
@@ -61,10 +61,13 @@ const controller = function(queryHandler, CommonCommandHandler) {
         .then(user => {
           if (user.id) {
             if (user.avatarPath) return res.sendFile(user.avatarPath, options);
-            else return res.json({ msg: CONSTANTS.ERRORS.FILE_NOT_FOUND });
+            else
+              return res
+                .status(204)
+                .json({ msg: CONSTANTS.ERRORS.FILE_NOT_FOUND });
           } else
             return res
-              .status(400)
+              .status(404)
               .json({ msg: CONSTANTS.ERRORS.USER_NOT_EXISTS });
         })
         .catch(e => {
@@ -81,7 +84,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
         .then(user => {
           if (!user.id)
             return res
-              .status(400)
+              .status(404)
               .json({ msg: CONSTANTS.ERRORS.USER_NOT_EXISTS });
           return queryHandler.getFaveRoutes(req.params.id).then(results => {
             return res.json({ routes: results });
@@ -133,7 +136,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
             });
           })
           .catch(e => {
-            return res.status(400).json({ err: e });
+            return res.status(404).json({ err: e });
           });
       } else
         return res
@@ -182,7 +185,16 @@ const controller = function(queryHandler, CommonCommandHandler) {
           });
         })
         .catch(e => {
-          return res.status(400).json({ err: e });
+          let status;
+          if (e === CONSTANTS.ERRORS.USERNAME_TAKEN) status = 409;
+          else if (e === CONSTANTS.ERRORS.EMAIL_TAKEN) status = 409;
+          else if (e.includes(CONSTANTS.ERRORS.EMAIL_INVALID_FORMAT))
+            status = 400;
+          else if (e.includes(CONSTANTS.ERRORS.PASSWORDS_NOT_MATCH))
+            status = 400;
+          else status = 400;
+
+          return res.status(status).json({ err: e });
         });
     },
 
@@ -232,7 +244,12 @@ const controller = function(queryHandler, CommonCommandHandler) {
           });
         })
         .catch(e => {
-          return res.status(400).json({ err: e });
+          let status;
+          if (e === CONSTANTS.ERRORS.USERNAME_TAKEN) status = 409;
+          else if (e === CONSTANTS.ERRORS.EMAIL_TAKEN) status = 409;
+          else if (e === CONSTANTS.ERRORS.EMAIL_INVALID_FORMAT) status = 400;
+          else status = 400;
+          return res.status(status).json({ err: e });
         });
     },
 
@@ -261,7 +278,10 @@ const controller = function(queryHandler, CommonCommandHandler) {
           });
         })
         .catch(e => {
-          return res.status(400).json({ err: e });
+          let status;
+          if (e.includes(CONSTANTS.ERRORS.USER_NOT_EXISTS)) status = 404;
+          else status = 400;
+          return res.status(status).json({ err: e });
         });
     },
 
@@ -283,7 +303,10 @@ const controller = function(queryHandler, CommonCommandHandler) {
           });
         })
         .catch(e => {
-          return res.status(400).json({ err: e });
+          let status;
+          if (e.includes(CONSTANTS.ERRORS.USER_NOT_EXISTS)) status = 404;
+          else status = 400;
+          return res.status(status).json({ err: e });
         });
     }
   };

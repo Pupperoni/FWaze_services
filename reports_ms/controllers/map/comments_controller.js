@@ -41,7 +41,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
         .getCommentsByReportId(req.params.id, req.query.page)
         .then(results => {
           if (results.length === 0) {
-            return res.json({
+            return res.status(204).json({
               msg: CONSTANTS.ERRORS.COMMENTS_NOT_FOUND,
               data: []
             });
@@ -75,6 +75,8 @@ const controller = function(queryHandler, CommonCommandHandler) {
       queryHandler
         .countCommentsByReportId(req.params.id)
         .then(results => {
+          if (results["COUNT(*)"] === 0)
+            return res.status(204).json({ data: results["COUNT(*)"] });
           return res.json({ data: results["COUNT(*)"] });
         })
         .catch(e => {
@@ -124,7 +126,11 @@ const controller = function(queryHandler, CommonCommandHandler) {
           });
         })
         .catch(e => {
-          return res.status(400).json({ err: e });
+          let status;
+          if (e.includes(CONSTANTS.ERRORS.USER_NOT_EXISTS)) status = 401;
+          else if (e.includes(CONSTANTS.ERRORS.REPORT_NOT_EXISTS)) status = 404;
+          else status = 400;
+          return res.status(status).json({ err: e });
         });
     }
   };

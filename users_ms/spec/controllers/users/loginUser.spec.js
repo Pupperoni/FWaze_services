@@ -59,10 +59,48 @@ describe("user login", () => {
     controller = usersController(mockQueryHandler, null);
   });
 
-  it("should return error 400 when wrong user name", done => {
+  it("should return error 404 when wrong user name", done => {
     // arrange
     mockRequest = httpMock.createRequest({
       body: { name: "wrongName", password: "secret" }
+    });
+
+    mockResponse.on("end", () => {
+      // assert
+      expect(mockResponse.statusCode).toEqual(404);
+      expect(mockResponse._getJSONData()).toEqual({
+        err: CONSTANTS.ERRORS.DEFAULT_LOGIN_FAILURE
+      });
+      done();
+    });
+
+    // act
+    controller.loginUser(mockRequest, mockResponse, null);
+  });
+
+  it("should return error 404 when wrong password", done => {
+    // arrange
+    mockRequest = httpMock.createRequest({
+      body: { name: "wrongPass", password: "secret" }
+    });
+
+    mockResponse.on("end", () => {
+      // assert
+      expect(mockResponse.statusCode).toEqual(404);
+      expect(mockResponse._getJSONData()).toEqual({
+        err: CONSTANTS.ERRORS.DEFAULT_LOGIN_FAILURE
+      });
+      done();
+    });
+
+    // act
+    controller.loginUser(mockRequest, mockResponse, null);
+  });
+
+  it("should return error 400 when blank details", done => {
+    // arrange
+    mockRequest = httpMock.createRequest({
+      body: { name: "", password: "" }
     });
 
     mockResponse.on("end", () => {
@@ -78,10 +116,10 @@ describe("user login", () => {
     controller.loginUser(mockRequest, mockResponse, null);
   });
 
-  it("should return error 400 when wrong password", done => {
+  it("should return error 400 when missing details", done => {
     // arrange
     mockRequest = httpMock.createRequest({
-      body: { name: "wrongPass", password: "secret" }
+      body: {}
     });
 
     mockResponse.on("end", () => {

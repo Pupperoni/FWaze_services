@@ -173,7 +173,7 @@ describe("create ad", () => {
   /*
    * test validate
    */
-  it("should return error 400 when user does not exist", done => {
+  it("should return error 401 when user does not exist", done => {
     // arrange
     mockRequest = httpMock.createRequest({
       method: "POST",
@@ -189,7 +189,7 @@ describe("create ad", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(401);
       expect(mockResponse._getJSONData()).toEqual({
         err: [CONSTANTS.ERRORS.USER_NOT_EXISTS]
       });
@@ -203,7 +203,7 @@ describe("create ad", () => {
     // }, 2000);
   });
 
-  it("should return error 400 when user role invalid", done => {
+  it("should return error 403 when user role invalid", done => {
     // arrange
     mockRequest = httpMock.createRequest({
       method: "POST",
@@ -219,7 +219,7 @@ describe("create ad", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(403);
       expect(mockResponse._getJSONData()).toEqual({
         err: [CONSTANTS.ERRORS.USER_NOT_PERMITTED]
       });

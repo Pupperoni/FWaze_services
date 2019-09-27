@@ -27,7 +27,7 @@ describe("get all ads", () => {
     controller = adsController(mockQueryHandler, null);
   });
 
-  it("should return 200 with empty ad list", done => {
+  it("should return 204 with empty ad list", done => {
     // arrange
     mockQueryHandler.getAdsByBorder.and.callFake(() => {
       return Promise.resolve([]);
@@ -35,7 +35,7 @@ describe("get all ads", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(200);
+      expect(mockResponse.statusCode).toEqual(204);
       expect(JSON.parse(mockResponse._getData())).toEqual({
         ads: []
       });

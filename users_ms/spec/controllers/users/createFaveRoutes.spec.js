@@ -114,16 +114,12 @@ describe("create user route", () => {
 
     // act
     controller.createFaveRoute(mockRequest, mockResponse, null);
-    // setTimeout(() => {
-    //   // set timer to give init time
-
-    // }, 2000);
   });
 
   /*
    * test validate
    */
-  it("should return error 400 when user does not exist", done => {
+  it("should return error 404 when user does not exist", done => {
     // arrange
     mockRequest = httpMock.createRequest({
       method: "POST",
@@ -141,7 +137,7 @@ describe("create user route", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(404);
       expect(mockResponse._getJSONData()).toEqual({
         err: [CONSTANTS.ERRORS.USER_NOT_EXISTS]
       });
@@ -150,10 +146,6 @@ describe("create user route", () => {
 
     // act
     controller.createFaveRoute(mockRequest, mockResponse, null);
-    // setTimeout(() => {
-    //   // set timer to give init time
-
-    // }, 2000);
   });
 
   /*
@@ -200,9 +192,5 @@ describe("create user route", () => {
 
     // act
     controller.createFaveRoute(mockRequest, mockResponse, null);
-    // setTimeout(() => {
-    //   // set timer to give init time
-
-    // }, 2000);
   });
 });

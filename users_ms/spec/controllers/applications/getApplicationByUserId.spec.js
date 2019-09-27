@@ -30,7 +30,7 @@ describe("get application by user id", () => {
     controller = applicationController(mockQueryHandler, null);
   });
 
-  it("should return 200 with empty data when application does not exist", done => {
+  it("should return 204 with empty data when application does not exist", done => {
     // arrange
     mockRequest = httpMock.createRequest({
       params: { id: "noExist" }
@@ -38,7 +38,7 @@ describe("get application by user id", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(200);
+      expect(mockResponse.statusCode).toEqual(204);
       expect(JSON.parse(mockResponse._getData())).toEqual({});
       done();
     });
@@ -47,7 +47,7 @@ describe("get application by user id", () => {
     controller.getApplicationByUserId(mockRequest, mockResponse, null);
   });
 
-  it("should return error 500", done => {
+  it("should return error 500 upon server", done => {
     // arrange
     mockRequest = httpMock.createRequest({
       params: { id: "serverError" }

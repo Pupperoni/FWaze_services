@@ -28,7 +28,7 @@ describe("get comments by report id", () => {
     controller = commentsController(mockQueryHandler, null);
   });
 
-  it("should return 200 with empty comments list", done => {
+  it("should return 204 with empty comments list", done => {
     // arrange
     mockQueryHandler.getCommentsByReportId.and.callFake((id, page) => {
       return Promise.resolve([]);
@@ -36,7 +36,7 @@ describe("get comments by report id", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(200);
+      expect(mockResponse.statusCode).toEqual(204);
       expect(mockResponse._getJSONData()).toEqual({
         msg: CONSTANTS.ERRORS.COMMENTS_NOT_FOUND,
         data: []

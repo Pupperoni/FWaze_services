@@ -27,7 +27,7 @@ describe("get all reports", () => {
     controller = reportsController(mockQueryHandler, null);
   });
 
-  it("should return 200 with empty report list", done => {
+  it("should return 204 with empty report list", done => {
     // arrange
     mockQueryHandler.getReportsByTypeBorder.and.callFake(() => {
       return Promise.resolve([]);
@@ -35,7 +35,7 @@ describe("get all reports", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(200);
+      expect(mockResponse.statusCode).toEqual(204);
       expect(JSON.parse(mockResponse._getData())).toEqual({
         reports: []
       });

@@ -29,7 +29,7 @@ describe("get user routes", () => {
     controller = usersController(mockQueryHandler, null);
   });
 
-  it("should return error 400 when user does not exist", done => {
+  it("should return error 404 when user does not exist", done => {
     // arrange
     mockQueryHandler.getUserById.and.callFake(() => {
       return Promise.resolve({});
@@ -37,7 +37,7 @@ describe("get user routes", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(404);
       expect(JSON.parse(mockResponse._getData())).toEqual({
         msg: CONSTANTS.ERRORS.USER_NOT_EXISTS
       });

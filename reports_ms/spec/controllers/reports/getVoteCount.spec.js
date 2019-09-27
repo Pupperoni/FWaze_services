@@ -25,7 +25,7 @@ describe("get vote count", () => {
     controller = reportsController(mockQueryHandler, null);
   });
 
-  it("should return 0 when report does not exist", done => {
+  it("should return status 204 and value 0 when report does not exist", done => {
     // arrange
     mockRequest = httpMock.createRequest({
       method: "GET",
@@ -36,7 +36,7 @@ describe("get vote count", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(200);
+      expect(mockResponse.statusCode).toEqual(204);
       expect(JSON.parse(mockResponse._getData())).toEqual({
         result: 0
       });

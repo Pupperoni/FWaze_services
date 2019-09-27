@@ -163,7 +163,7 @@ describe("approve user application", () => {
   /*
    * test validate
    */
-  it("should return error 400 when admin does not exist", done => {
+  it("should return error 403 when admin does not exist", done => {
     // arrange
     mockRequest = httpMock.createRequest({
       method: "POST",
@@ -176,34 +176,7 @@ describe("approve user application", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
-      expect(mockResponse._getJSONData()).toEqual({
-        err: [CONSTANTS.ERRORS.USER_NOT_EXISTS]
-      });
-      done();
-    });
-
-    // act
-    controller.rejectApplication(mockRequest, mockResponse, null);
-    // setTimeout(() => {
-    //   // set timer to give init time
-    // }, 2000);
-  });
-
-  it("should return error 400 when admin role invalid", done => {
-    // arrange
-    mockRequest = httpMock.createRequest({
-      method: "POST",
-      body: {
-        id: "appId",
-        userId: "someId",
-        adminId: "wrongRole"
-      }
-    });
-
-    mockResponse.on("end", () => {
-      // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(403);
       expect(mockResponse._getJSONData()).toEqual({
         err: [CONSTANTS.ERRORS.USER_NOT_PERMITTED]
       });
@@ -217,7 +190,34 @@ describe("approve user application", () => {
     // }, 2000);
   });
 
-  it("should return error 400 when applicant does not exist", done => {
+  it("should return error 403 when admin role invalid", done => {
+    // arrange
+    mockRequest = httpMock.createRequest({
+      method: "POST",
+      body: {
+        id: "appId",
+        userId: "someId",
+        adminId: "wrongRole"
+      }
+    });
+
+    mockResponse.on("end", () => {
+      // assert
+      expect(mockResponse.statusCode).toEqual(403);
+      expect(mockResponse._getJSONData()).toEqual({
+        err: [CONSTANTS.ERRORS.USER_NOT_PERMITTED]
+      });
+      done();
+    });
+
+    // act
+    controller.rejectApplication(mockRequest, mockResponse, null);
+    // setTimeout(() => {
+    //   // set timer to give init time
+    // }, 2000);
+  });
+
+  it("should return error 404 when applicant does not exist", done => {
     // arrange
     mockRequest = httpMock.createRequest({
       method: "POST",
@@ -230,7 +230,7 @@ describe("approve user application", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(404);
       expect(mockResponse._getJSONData()).toEqual({
         err: [CONSTANTS.ERRORS.USER_NOT_EXISTS]
       });
@@ -244,7 +244,7 @@ describe("approve user application", () => {
     // }, 2000);
   });
 
-  it("should return error 400 when application does not exist", done => {
+  it("should return error 404 when application does not exist", done => {
     // arrange
     mockRequest = httpMock.createRequest({
       method: "POST",
@@ -257,7 +257,7 @@ describe("approve user application", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(404);
       expect(mockResponse._getJSONData()).toEqual({
         err: [CONSTANTS.ERRORS.APPLICATION_NOT_EXISTS]
       });
@@ -271,7 +271,7 @@ describe("approve user application", () => {
     // }, 2000);
   });
 
-  it("should return error 400 when application already approved", done => {
+  it("should return error 409 when application already approved", done => {
     // arrange
     mockRequest = httpMock.createRequest({
       method: "POST",
@@ -284,9 +284,9 @@ describe("approve user application", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(409);
       expect(mockResponse._getJSONData()).toEqual({
-        err: [CONSTANTS.ERRORS.USER_NOT_PERMITTED]
+        err: [CONSTANTS.ERRORS.DUPLICATE_APPLICATION]
       });
       done();
     });
@@ -298,7 +298,7 @@ describe("approve user application", () => {
     // }, 2000);
   });
 
-  it("should return error 400 when application already rejected", done => {
+  it("should return error 409 when application already rejected", done => {
     // arrange
     mockRequest = httpMock.createRequest({
       method: "POST",
@@ -311,9 +311,9 @@ describe("approve user application", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(400);
+      expect(mockResponse.statusCode).toEqual(409);
       expect(mockResponse._getJSONData()).toEqual({
-        err: [CONSTANTS.ERRORS.USER_NOT_PERMITTED]
+        err: [CONSTANTS.ERRORS.DUPLICATE_APPLICATION]
       });
       done();
     });

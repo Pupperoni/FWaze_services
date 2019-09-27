@@ -43,7 +43,7 @@ ApplicationApprovedCommandHandler.prototype.validate = function(payload) {
         // user does not exist
         if (!user) {
           valid = false;
-          reasons.push(CONSTANTS.ERRORS.USER_NOT_EXISTS);
+          reasons.push(CONSTANTS.ERRORS.USER_NOT_PERMITTED);
         }
         // should be admin
         else if (user.role != 2) {
@@ -63,7 +63,7 @@ ApplicationApprovedCommandHandler.prototype.validate = function(payload) {
         // application is not pending
         else if (user.status !== 0) {
           valid = false;
-          reasons.push(CONSTANTS.ERRORS.USER_NOT_PERMITTED);
+          reasons.push(CONSTANTS.ERRORS.DUPLICATE_APPLICATION);
         }
         if (valid) return Promise.resolve(payload);
         else return Promise.reject(reasons);
