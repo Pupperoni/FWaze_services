@@ -12,7 +12,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
       queryHandler
         .getApplicationByUserId(req.params.id)
         .then(result => {
-          if (!result) return res.status(204).json({ data: result });
+          if (!result) return res.status(200).json({ data: result });
           else return res.json({ data: result });
         })
         .catch(e => {
@@ -26,7 +26,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
         .getAllApplications()
         .then(results => {
           if (results.length === 0)
-            return res.status(204).json({ data: results });
+            return res.status(200).json({ data: results });
           else return res.json({ data: results });
         })
         .catch(e => {
@@ -40,7 +40,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
         .getPendingApplications()
         .then(results => {
           if (results.length === 0)
-            return res.status(204).json({ data: results });
+            return res.status(200).json({ data: results });
           else return res.json({ data: results });
         })
         .catch(e => {

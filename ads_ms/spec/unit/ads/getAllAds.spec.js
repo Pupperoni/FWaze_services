@@ -1,7 +1,7 @@
 const httpMock = require("node-mocks-http");
-const commentsController = require("../../../controllers/map/comments_controller");
+const adsController = require("../../../controllers/map/advertisements_controller");
 
-describe("count comments by report id", () => {
+describe("get all ads", () => {
   let controller;
   let mockQueryHandler;
   let mockRequest;
@@ -9,7 +9,7 @@ describe("count comments by report id", () => {
 
   beforeEach(() => {
     mockQueryHandler = jasmine.createSpyObj("mockQueryHandler", [
-      "countCommentsByReportId"
+      "getAdsByBorder"
     ]);
 
     mockResponse = httpMock.createResponse({
@@ -18,37 +18,36 @@ describe("count comments by report id", () => {
 
     mockRequest = httpMock.createRequest({
       method: "GET",
-      params: {
-        id: "someId"
+      query: {
+        tright: "20,20",
+        bleft: "1,1"
       }
     });
 
-    controller = commentsController(mockQueryHandler, null);
+    controller = adsController(mockQueryHandler, null);
   });
 
-  it("should return status 204 with empty comments list", done => {
+  it("should return 200 with empty ad list", done => {
     // arrange
-    mockQueryHandler.countCommentsByReportId.and.callFake(id => {
-      let data = {};
-      data["COUNT(*)"] = 0;
-      return Promise.resolve(data);
+    mockQueryHandler.getAdsByBorder.and.callFake(() => {
+      return Promise.resolve([]);
     });
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(204);
-      expect(mockResponse._getJSONData()).toEqual({
-        data: 0
+      expect(mockResponse.statusCode).toEqual(200);
+      expect(JSON.parse(mockResponse._getData())).toEqual({
+        ads: []
       });
       done();
     });
 
     // act
-    controller.countCommentsByReportId(mockRequest, mockResponse, null);
+    controller.getAdsByRange(mockRequest, mockResponse, null);
   });
 
   it("should return error 500 on server error", done => {
-    mockQueryHandler.countCommentsByReportId.and.callFake(id => {
+    mockQueryHandler.getAdsByBorder.and.callFake(() => {
       return Promise.reject("oops server error");
     });
 
@@ -62,26 +61,36 @@ describe("count comments by report id", () => {
     });
 
     // act
-    controller.countCommentsByReportId(mockRequest, mockResponse, null);
+    controller.getAdsByRange(mockRequest, mockResponse, null);
   });
 
   it("should return status 200 with correct message", done => {
-    mockQueryHandler.countCommentsByReportId.and.callFake(id => {
-      let data = {};
-      data["COUNT(*)"] = 3;
-      return Promise.resolve(data);
+    mockQueryHandler.getAdsByBorder.and.callFake(() => {
+      return Promise.resolve([
+        {
+          id: "ad1",
+          latitude: "5",
+          longitude: "10"
+        }
+      ]);
     });
 
     mockResponse.on("end", () => {
       // assert
       expect(mockResponse.statusCode).toEqual(200);
       expect(JSON.parse(mockResponse._getData())).toEqual({
-        data: 3
+        ads: [
+          {
+            id: "ad1",
+            latitude: "5",
+            longitude: "10"
+          }
+        ]
       });
       done();
     });
 
     // act
-    controller.countCommentsByReportId(mockRequest, mockResponse, null);
+    controller.getAdsByRange(mockRequest, mockResponse, null);
   });
 });

@@ -1,8 +1,7 @@
 const httpMock = require("node-mocks-http");
 const commentsController = require("../../../controllers/map/comments_controller");
-const CONSTANTS = require("../../../constants");
 
-describe("get comments by report id", () => {
+describe("count comments by report id", () => {
   let controller;
   let mockQueryHandler;
   let mockRequest;
@@ -10,7 +9,7 @@ describe("get comments by report id", () => {
 
   beforeEach(() => {
     mockQueryHandler = jasmine.createSpyObj("mockQueryHandler", [
-      "getCommentsByReportId"
+      "countCommentsByReportId"
     ]);
 
     mockResponse = httpMock.createResponse({
@@ -20,36 +19,36 @@ describe("get comments by report id", () => {
     mockRequest = httpMock.createRequest({
       method: "GET",
       params: {
-        id: "someId",
-        page: 0
+        id: "someId"
       }
     });
 
     controller = commentsController(mockQueryHandler, null);
   });
 
-  it("should return 204 with empty comments list", done => {
+  it("should return status 200 with empty comments list", done => {
     // arrange
-    mockQueryHandler.getCommentsByReportId.and.callFake((id, page) => {
-      return Promise.resolve([]);
+    mockQueryHandler.countCommentsByReportId.and.callFake(id => {
+      let data = {};
+      data["COUNT(*)"] = 0;
+      return Promise.resolve(data);
     });
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(204);
+      expect(mockResponse.statusCode).toEqual(200);
       expect(mockResponse._getJSONData()).toEqual({
-        msg: CONSTANTS.ERRORS.COMMENTS_NOT_FOUND,
-        data: []
+        data: 0
       });
       done();
     });
 
     // act
-    controller.getCommentsByReportId(mockRequest, mockResponse, null);
+    controller.countCommentsByReportId(mockRequest, mockResponse, null);
   });
 
   it("should return error 500 on server error", done => {
-    mockQueryHandler.getCommentsByReportId.and.callFake(() => {
+    mockQueryHandler.countCommentsByReportId.and.callFake(id => {
       return Promise.reject("oops server error");
     });
 
@@ -63,32 +62,26 @@ describe("get comments by report id", () => {
     });
 
     // act
-    controller.getCommentsByReportId(mockRequest, mockResponse, null);
+    controller.countCommentsByReportId(mockRequest, mockResponse, null);
   });
 
   it("should return status 200 with correct message", done => {
-    mockQueryHandler.getCommentsByReportId.and.callFake(() => {
-      return Promise.resolve([
-        {
-          id: "comment1"
-        }
-      ]);
+    mockQueryHandler.countCommentsByReportId.and.callFake(id => {
+      let data = {};
+      data["COUNT(*)"] = 3;
+      return Promise.resolve(data);
     });
 
     mockResponse.on("end", () => {
       // assert
       expect(mockResponse.statusCode).toEqual(200);
       expect(JSON.parse(mockResponse._getData())).toEqual({
-        data: [
-          {
-            id: "comment1"
-          }
-        ]
+        data: 3
       });
       done();
     });
 
     // act
-    controller.getCommentsByReportId(mockRequest, mockResponse, null);
+    controller.countCommentsByReportId(mockRequest, mockResponse, null);
   });
 });

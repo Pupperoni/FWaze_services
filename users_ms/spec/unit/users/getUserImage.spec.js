@@ -60,7 +60,7 @@ describe("get user image", () => {
     controller.getImage(mockRequest, mockResponse, null);
   });
 
-  it("should return status 204 with no existing file", done => {
+  it("should return status 200 with no existing file", done => {
     // arrange
     mockQueryHandler.getUserById.and.callFake(id => {
       const userData = {
@@ -78,7 +78,7 @@ describe("get user image", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(204);
+      expect(mockResponse.statusCode).toEqual(200);
       expect(mockResponse._getJSONData()).toEqual({
         msg: CONSTANTS.ERRORS.FILE_NOT_FOUND
       });

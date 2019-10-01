@@ -98,7 +98,6 @@ const broker = {
   publish: (topic, payload, aggregateID, offset) => {
     // Add offset to payload to extract later
     payload.offset = offset;
-
     let messagesToBeSent = [
       {
         topic: topic,

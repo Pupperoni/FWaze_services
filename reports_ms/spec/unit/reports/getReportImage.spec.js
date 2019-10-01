@@ -1,16 +1,18 @@
 const httpMock = require("node-mocks-http");
-const adsController = require("../../../controllers/map/advertisements_controller");
+const reportsController = require("../../../controllers/map/reports_controller");
 const CONSTANTS = require("../../../constants");
 
-describe("get ad image", () => {
+describe("get report image", () => {
   let controller;
   let mockQueryHandler;
   let mockRequest;
   let mockResponse;
 
   beforeEach(() => {
-    mockQueryHandler = jasmine.createSpyObj("mockQueryHandler", ["getAdById"]);
-    controller = adsController(mockQueryHandler, null);
+    mockQueryHandler = jasmine.createSpyObj("mockQueryHandler", [
+      "getReportById"
+    ]);
+    controller = reportsController(mockQueryHandler, null);
 
     mockResponse = httpMock.createResponse({
       eventEmitter: require("events").EventEmitter
@@ -20,9 +22,9 @@ describe("get ad image", () => {
     });
   });
 
-  it("should return error 404 when ad does not exist", done => {
+  it("should return error 404 when report does not exist", done => {
     // arrange
-    mockQueryHandler.getAdById.and.callFake(() => {
+    mockQueryHandler.getReportById.and.callFake(() => {
       return Promise.resolve({});
     });
 
@@ -30,7 +32,7 @@ describe("get ad image", () => {
       // assert
       expect(mockResponse.statusCode).toEqual(404);
       expect(JSON.parse(mockResponse._getData())).toEqual({
-        msg: CONSTANTS.ERRORS.AD_NOT_EXISTS
+        msg: CONSTANTS.ERRORS.REPORT_NOT_EXISTS
       });
       done();
     });
@@ -41,7 +43,7 @@ describe("get ad image", () => {
 
   it("should return error 500 when server error", done => {
     // arrange
-    mockQueryHandler.getAdById.and.callFake(() => {
+    mockQueryHandler.getReportById.and.callFake(() => {
       return Promise.reject();
     });
 
@@ -58,9 +60,9 @@ describe("get ad image", () => {
     controller.getImage(mockRequest, mockResponse, null);
   });
 
-  it("should return status 204 with no existing file", done => {
+  it("should return status 200 with no existing file", done => {
     // arrange
-    mockQueryHandler.getAdById.and.callFake(id => {
+    mockQueryHandler.getReportById.and.callFake(id => {
       const data = {
         id: id
       };
@@ -69,7 +71,7 @@ describe("get ad image", () => {
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(204);
+      expect(mockResponse.statusCode).toEqual(200);
       expect(mockResponse._getJSONData()).toEqual({
         msg: CONSTANTS.ERRORS.FILE_NOT_FOUND
       });
@@ -88,8 +90,10 @@ describe("get user image success", () => {
   let mockResponse;
 
   beforeEach(() => {
-    mockQueryHandler = jasmine.createSpyObj("mockQueryHandler", ["getAdById"]);
-    controller = adsController(mockQueryHandler, null);
+    mockQueryHandler = jasmine.createSpyObj("mockQueryHandler", [
+      "getReportById"
+    ]);
+    controller = reportsController(mockQueryHandler, null);
 
     mockResponse = jasmine.createSpyObj("mockResponse", ["sendFile"]);
 
@@ -104,7 +108,7 @@ describe("get user image success", () => {
 
   it("should return status 200 with existing file", done => {
     // arrange
-    mockQueryHandler.getAdById.and.callFake(id => {
+    mockQueryHandler.getReportById.and.callFake(id => {
       const data = {
         id: id,
         photoPath: "/path/to/file"

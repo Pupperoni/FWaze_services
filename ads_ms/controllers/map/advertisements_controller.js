@@ -46,7 +46,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
         .getAdsByBorder(left, right, bottom, top)
         .then(results => {
           if (results.length === 0)
-            return res.status(204).json({ ads: results });
+            return res.status(200).json({ ads: results });
           else return res.json({ ads: results });
         })
         .catch(e => {
@@ -84,7 +84,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
             if (ad.photoPath) return res.sendFile(ad.photoPath, options);
             else
               return res
-                .status(204)
+                .status(200)
                 .json({ msg: CONSTANTS.ERRORS.FILE_NOT_FOUND });
           } else
             return res

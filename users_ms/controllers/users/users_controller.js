@@ -63,7 +63,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
             if (user.avatarPath) return res.sendFile(user.avatarPath, options);
             else
               return res
-                .status(204)
+                .status(200)
                 .json({ msg: CONSTANTS.ERRORS.FILE_NOT_FOUND });
           } else
             return res

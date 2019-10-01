@@ -1,7 +1,7 @@
 const httpMock = require("node-mocks-http");
-const adsController = require("../../../controllers/map/advertisements_controller");
+const reportsController = require("../../../controllers/map/reports_controller");
 
-describe("get all ads", () => {
+describe("get all reports", () => {
   let controller;
   let mockQueryHandler;
   let mockRequest;
@@ -9,7 +9,7 @@ describe("get all ads", () => {
 
   beforeEach(() => {
     mockQueryHandler = jasmine.createSpyObj("mockQueryHandler", [
-      "getAdsByBorder"
+      "getReportsByTypeBorder"
     ]);
 
     mockResponse = httpMock.createResponse({
@@ -24,30 +24,30 @@ describe("get all ads", () => {
       }
     });
 
-    controller = adsController(mockQueryHandler, null);
+    controller = reportsController(mockQueryHandler, null);
   });
 
-  it("should return 204 with empty ad list", done => {
+  it("should return 200 with empty report list", done => {
     // arrange
-    mockQueryHandler.getAdsByBorder.and.callFake(() => {
+    mockQueryHandler.getReportsByTypeBorder.and.callFake(() => {
       return Promise.resolve([]);
     });
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(204);
+      expect(mockResponse.statusCode).toEqual(200);
       expect(JSON.parse(mockResponse._getData())).toEqual({
-        ads: []
+        reports: []
       });
       done();
     });
 
     // act
-    controller.getAdsByRange(mockRequest, mockResponse, null);
+    controller.getReportsByTypeRange(mockRequest, mockResponse, null);
   });
 
   it("should return error 500 on server error", done => {
-    mockQueryHandler.getAdsByBorder.and.callFake(() => {
+    mockQueryHandler.getReportsByTypeBorder.and.callFake(() => {
       return Promise.reject("oops server error");
     });
 
@@ -61,14 +61,14 @@ describe("get all ads", () => {
     });
 
     // act
-    controller.getAdsByRange(mockRequest, mockResponse, null);
+    controller.getReportsByTypeRange(mockRequest, mockResponse, null);
   });
 
   it("should return status 200 with correct message", done => {
-    mockQueryHandler.getAdsByBorder.and.callFake(() => {
+    mockQueryHandler.getReportsByTypeBorder.and.callFake(() => {
       return Promise.resolve([
         {
-          id: "ad1",
+          id: "report1",
           latitude: "5",
           longitude: "10"
         }
@@ -79,9 +79,9 @@ describe("get all ads", () => {
       // assert
       expect(mockResponse.statusCode).toEqual(200);
       expect(JSON.parse(mockResponse._getData())).toEqual({
-        ads: [
+        reports: [
           {
-            id: "ad1",
+            id: "report1",
             latitude: "5",
             longitude: "10"
           }
@@ -91,6 +91,6 @@ describe("get all ads", () => {
     });
 
     // act
-    controller.getAdsByRange(mockRequest, mockResponse, null);
+    controller.getReportsByTypeRange(mockRequest, mockResponse, null);
   });
 });

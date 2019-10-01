@@ -41,7 +41,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
         .getCommentsByReportId(req.params.id, req.query.page)
         .then(results => {
           if (results.length === 0) {
-            return res.status(204).json({
+            return res.status(200).json({
               msg: CONSTANTS.ERRORS.COMMENTS_NOT_FOUND,
               data: []
             });
@@ -76,7 +76,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
         .countCommentsByReportId(req.params.id)
         .then(results => {
           if (results["COUNT(*)"] === 0)
-            return res.status(204).json({ data: results["COUNT(*)"] });
+            return res.status(200).json({ data: results["COUNT(*)"] });
           return res.json({ data: results["COUNT(*)"] });
         })
         .catch(e => {

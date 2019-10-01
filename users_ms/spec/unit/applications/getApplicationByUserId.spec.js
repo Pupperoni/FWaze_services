@@ -4,13 +4,25 @@ const applicationController = require("../../../controllers/users/applications_c
 describe("get application by user id", () => {
   let controller;
   let mockQueryHandler;
+  let mockRequest;
   let mockResponse;
 
   beforeEach(() => {
     mockQueryHandler = jasmine.createSpyObj("mockQueryHandler", [
-      "getPendingApplications"
+      "getApplicationByUserId"
     ]);
 
+    mockQueryHandler.getApplicationByUserId.and.callFake(id => {
+      if (id === "noExist") return Promise.resolve();
+      else if (id === "serverError") return Promise.reject("oops error");
+      else {
+        return Promise.resolve({
+          userId: id,
+          status: 0,
+          timestamp: "2 o'clock"
+        });
+      }
+    });
     mockResponse = httpMock.createResponse({
       eventEmitter: require("events").EventEmitter
     });
@@ -18,27 +30,27 @@ describe("get application by user id", () => {
     controller = applicationController(mockQueryHandler, null);
   });
 
-  it("should return 204 with empty data when no applications exist", done => {
+  it("should return 200 with empty data when application does not exist", done => {
     // arrange
-    mockQueryHandler.getPendingApplications.and.callFake(() => {
-      return Promise.resolve([]);
+    mockRequest = httpMock.createRequest({
+      params: { id: "noExist" }
     });
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(204);
-      expect(JSON.parse(mockResponse._getData())).toEqual({ data: [] });
+      expect(mockResponse.statusCode).toEqual(200);
+      expect(JSON.parse(mockResponse._getData())).toEqual({});
       done();
     });
 
     // act
-    controller.getPendingApplications(null, mockResponse, null);
+    controller.getApplicationByUserId(mockRequest, mockResponse, null);
   });
 
-  it("should return error 500 upon server error", done => {
+  it("should return error 500 upon server", done => {
     // arrange
-    mockQueryHandler.getPendingApplications.and.callFake(() => {
-      return Promise.reject("oops error");
+    mockRequest = httpMock.createRequest({
+      params: { id: "serverError" }
     });
 
     mockResponse.on("end", () => {
@@ -51,37 +63,29 @@ describe("get application by user id", () => {
     });
 
     // act
-    controller.getPendingApplications(null, mockResponse, null);
+    controller.getApplicationByUserId(mockRequest, mockResponse, null);
   });
 
   it("should return status 200 with correct message", done => {
     // arrange
-    mockQueryHandler.getPendingApplications.and.callFake(() => {
-      return Promise.resolve([
-        {
-          userId: "someId",
-          status: 0,
-          timestamp: "2 o'clock"
-        }
-      ]);
+    mockRequest = httpMock.createRequest({
+      params: { id: "someId" }
     });
 
     mockResponse.on("end", () => {
       // assert
       expect(mockResponse.statusCode).toEqual(200);
       expect(JSON.parse(mockResponse._getData())).toEqual({
-        data: [
-          {
-            userId: "someId",
-            status: 0,
-            timestamp: "2 o'clock"
-          }
-        ]
+        data: {
+          userId: "someId",
+          status: 0,
+          timestamp: "2 o'clock"
+        }
       });
       done();
     });
 
     // act
-    controller.getPendingApplications(null, mockResponse, null);
+    controller.getApplicationByUserId(mockRequest, mockResponse, null);
   });
 });

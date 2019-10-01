@@ -116,7 +116,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
         )
         .then(results => {
           if (results.length === 0)
-            return res.status(204).json({ reports: results });
+            return res.status(200).json({ reports: results });
           else res.json({ reports: results });
         })
         .catch(e => {
@@ -152,7 +152,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
       queryHandler
         .getReportUpvotersCount(req.params.id)
         .then(count => {
-          if (count === 0) return res.status(204).json({ result: count });
+          if (count === 0) return res.status(200).json({ result: count });
           else return res.json({ result: count });
         })
         .catch(e => {
@@ -165,7 +165,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
       queryHandler
         .getUserVotePair(req.params.reportId, req.params.userId)
         .then(result => {
-          if (!result) return res.status(204).json(result);
+          if (!result) return res.status(200).json(result);
           return res.json(result);
         })
         .catch(e => {
@@ -186,7 +186,7 @@ const controller = function(queryHandler, CommonCommandHandler) {
               return res.sendFile(report.photoPath, options);
             else
               return res
-                .status(204)
+                .status(200)
                 .json({ msg: CONSTANTS.ERRORS.FILE_NOT_FOUND });
           } else
             return res

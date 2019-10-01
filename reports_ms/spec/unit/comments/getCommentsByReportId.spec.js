@@ -1,7 +1,8 @@
 const httpMock = require("node-mocks-http");
-const reportsController = require("../../../controllers/map/reports_controller");
+const commentsController = require("../../../controllers/map/comments_controller");
+const CONSTANTS = require("../../../constants");
 
-describe("get all reports", () => {
+describe("get comments by report id", () => {
   let controller;
   let mockQueryHandler;
   let mockRequest;
@@ -9,7 +10,7 @@ describe("get all reports", () => {
 
   beforeEach(() => {
     mockQueryHandler = jasmine.createSpyObj("mockQueryHandler", [
-      "getReportsByTypeBorder"
+      "getCommentsByReportId"
     ]);
 
     mockResponse = httpMock.createResponse({
@@ -18,36 +19,37 @@ describe("get all reports", () => {
 
     mockRequest = httpMock.createRequest({
       method: "GET",
-      query: {
-        tright: "20,20",
-        bleft: "1,1"
+      params: {
+        id: "someId",
+        page: 0
       }
     });
 
-    controller = reportsController(mockQueryHandler, null);
+    controller = commentsController(mockQueryHandler, null);
   });
 
-  it("should return 204 with empty report list", done => {
+  it("should return 200 with empty comments list", done => {
     // arrange
-    mockQueryHandler.getReportsByTypeBorder.and.callFake(() => {
+    mockQueryHandler.getCommentsByReportId.and.callFake((id, page) => {
       return Promise.resolve([]);
     });
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(204);
-      expect(JSON.parse(mockResponse._getData())).toEqual({
-        reports: []
+      expect(mockResponse.statusCode).toEqual(200);
+      expect(mockResponse._getJSONData()).toEqual({
+        msg: CONSTANTS.ERRORS.COMMENTS_NOT_FOUND,
+        data: []
       });
       done();
     });
 
     // act
-    controller.getReportsByTypeRange(mockRequest, mockResponse, null);
+    controller.getCommentsByReportId(mockRequest, mockResponse, null);
   });
 
   it("should return error 500 on server error", done => {
-    mockQueryHandler.getReportsByTypeBorder.and.callFake(() => {
+    mockQueryHandler.getCommentsByReportId.and.callFake(() => {
       return Promise.reject("oops server error");
     });
 
@@ -61,16 +63,14 @@ describe("get all reports", () => {
     });
 
     // act
-    controller.getReportsByTypeRange(mockRequest, mockResponse, null);
+    controller.getCommentsByReportId(mockRequest, mockResponse, null);
   });
 
   it("should return status 200 with correct message", done => {
-    mockQueryHandler.getReportsByTypeBorder.and.callFake(() => {
+    mockQueryHandler.getCommentsByReportId.and.callFake(() => {
       return Promise.resolve([
         {
-          id: "report1",
-          latitude: "5",
-          longitude: "10"
+          id: "comment1"
         }
       ]);
     });
@@ -79,11 +79,9 @@ describe("get all reports", () => {
       // assert
       expect(mockResponse.statusCode).toEqual(200);
       expect(JSON.parse(mockResponse._getData())).toEqual({
-        reports: [
+        data: [
           {
-            id: "report1",
-            latitude: "5",
-            longitude: "10"
+            id: "comment1"
           }
         ]
       });
@@ -91,6 +89,6 @@ describe("get all reports", () => {
     });
 
     // act
-    controller.getReportsByTypeRange(mockRequest, mockResponse, null);
+    controller.getCommentsByReportId(mockRequest, mockResponse, null);
   });
 });

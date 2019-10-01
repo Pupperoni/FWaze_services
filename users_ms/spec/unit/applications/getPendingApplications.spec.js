@@ -1,14 +1,14 @@
 const httpMock = require("node-mocks-http");
 const applicationController = require("../../../controllers/users/applications_controller");
 
-describe("get all applications", () => {
+describe("get application by user id", () => {
   let controller;
   let mockQueryHandler;
   let mockResponse;
 
   beforeEach(() => {
     mockQueryHandler = jasmine.createSpyObj("mockQueryHandler", [
-      "getAllApplications"
+      "getPendingApplications"
     ]);
 
     mockResponse = httpMock.createResponse({
@@ -18,26 +18,26 @@ describe("get all applications", () => {
     controller = applicationController(mockQueryHandler, null);
   });
 
-  it("should return 204 with empty data when no applications exist", done => {
+  it("should return 200 with empty data when no applications exist", done => {
     // arrange
-    mockQueryHandler.getAllApplications.and.callFake(() => {
+    mockQueryHandler.getPendingApplications.and.callFake(() => {
       return Promise.resolve([]);
     });
 
     mockResponse.on("end", () => {
       // assert
-      expect(mockResponse.statusCode).toEqual(204);
+      expect(mockResponse.statusCode).toEqual(200);
       expect(JSON.parse(mockResponse._getData())).toEqual({ data: [] });
       done();
     });
 
     // act
-    controller.getAllApplications(null, mockResponse, null);
+    controller.getPendingApplications(null, mockResponse, null);
   });
 
   it("should return error 500 upon server error", done => {
     // arrange
-    mockQueryHandler.getAllApplications.and.callFake(() => {
+    mockQueryHandler.getPendingApplications.and.callFake(() => {
       return Promise.reject("oops error");
     });
 
@@ -51,16 +51,16 @@ describe("get all applications", () => {
     });
 
     // act
-    controller.getAllApplications(null, mockResponse, null);
+    controller.getPendingApplications(null, mockResponse, null);
   });
 
   it("should return status 200 with correct message", done => {
     // arrange
-    mockQueryHandler.getAllApplications.and.callFake(() => {
+    mockQueryHandler.getPendingApplications.and.callFake(() => {
       return Promise.resolve([
         {
           userId: "someId",
-          status: 1,
+          status: 0,
           timestamp: "2 o'clock"
         }
       ]);
@@ -73,7 +73,7 @@ describe("get all applications", () => {
         data: [
           {
             userId: "someId",
-            status: 1,
+            status: 0,
             timestamp: "2 o'clock"
           }
         ]
@@ -82,6 +82,6 @@ describe("get all applications", () => {
     });
 
     // act
-    controller.getAllApplications(null, mockResponse, null);
+    controller.getPendingApplications(null, mockResponse, null);
   });
 });
