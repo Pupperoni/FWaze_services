@@ -25,7 +25,6 @@ describe("POST /users/new", () => {
         return res.body.data;
       })
       .then(payload => {
-        // TODO - Think another solution without using timeout
         setTimeout(() => {
           request(app)
             .get(`/users/${payload.id}`)
