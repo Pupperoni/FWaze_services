@@ -65,8 +65,8 @@ UserUpdatedCommandHandler.prototype.performCommand = function(payload) {
   if (payload.file) events[0].payload.avatarPath = payload.file.path;
 
   if (
-    typeof payload.home.latitude !== "undefined" ||
-    typeof payload.home.longitude !== "undefined"
+    payload.home.latitude !== "undefined" ||
+    payload.home.longitude !== "undefined"
   ) {
     events.push({
       eventId: shortid.generate(),
@@ -82,8 +82,8 @@ UserUpdatedCommandHandler.prototype.performCommand = function(payload) {
     });
   }
   if (
-    typeof payload.work.latitude !== "undefined" ||
-    typeof payload.work.longitude !== "undefined"
+    payload.work.latitude !== "undefined" ||
+    payload.work.longitude !== "undefined"
   )
     events.push({
       eventId: shortid.generate(),
