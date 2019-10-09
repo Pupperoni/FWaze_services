@@ -388,9 +388,16 @@ describe("update user broker", () => {
         mockBroker.commandSubscribe.calls.argsFor(0)[0]({
           value: JSON.stringify(message)
         });
-      } else if (topic === CONSTANTS.TOPICS.USER_EVENT) {
+      } else if (
+        topic === CONSTANTS.TOPICS.USER_EVENT &&
+        message.eventName === CONSTANTS.EVENTS.USER_UPDATED
+      ) {
         // assert
-        expect(message.eventName).toEqual(CONSTANTS.EVENTS.USER_UPDATED);
+        expect(message.payload).toEqual({
+          id: "someId",
+          name: "name",
+          email: "email@email"
+        });
         done();
       }
     });
@@ -418,7 +425,10 @@ describe("update user broker", () => {
         mockBroker.commandSubscribe.calls.argsFor(0)[0]({
           value: JSON.stringify(message)
         });
-      } else if (topic === CONSTANTS.TOPICS.USER_EVENT) {
+      } else if (
+        topic === CONSTANTS.TOPICS.USER_EVENT &&
+        message.eventName === CONSTANTS.EVENTS.USER_UPDATED
+      ) {
         // assert
         expect(message.eventName).toEqual(CONSTANTS.EVENTS.USER_UPDATED);
         expect(message.payload.avatarPath).toEqual("/path/to/file");

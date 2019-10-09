@@ -66,7 +66,9 @@ UserUpdatedCommandHandler.prototype.performCommand = function(payload) {
 
   if (
     payload.home.latitude !== "undefined" ||
-    payload.home.longitude !== "undefined"
+    payload.home.longitude !== "undefined" ||
+    typeof payload.home.latitude !== "undefined" ||
+    typeof payload.home.longitude !== "undefined"
   ) {
     events.push({
       eventId: shortid.generate(),
@@ -83,7 +85,9 @@ UserUpdatedCommandHandler.prototype.performCommand = function(payload) {
   }
   if (
     payload.work.latitude !== "undefined" ||
-    payload.work.longitude !== "undefined"
+    payload.work.longitude !== "undefined" ||
+    typeof payload.work.latitude !== "undefined" ||
+    typeof payload.work.longitude !== "undefined"
   )
     events.push({
       eventId: shortid.generate(),
