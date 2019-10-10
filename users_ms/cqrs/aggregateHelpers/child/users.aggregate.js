@@ -28,7 +28,6 @@ UsersAggregateHandler.prototype.getCurrentState = function(id) {
         history.forEach(event => {
           event = JSON.parse(event);
           let payload = event.payload;
-          console.log(payload);
 
           switch (event.eventName) {
             case CONSTANTS.EVENTS.USER_CREATED:

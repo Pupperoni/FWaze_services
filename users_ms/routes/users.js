@@ -4,6 +4,7 @@ const router = express.Router();
 
 const userQueryHandler = require("../db/sql/users/users.repository");
 const applicationQueryHandler = require("../db/sql/users/applications.repository");
+const routeHistoryQueryHander = require("../db/sql/users/route_history.repository");
 
 const eventStoreHelper = require("../cqrs/writeRepositories/event_store.helper")();
 const CommonAggregateHandler = require("../cqrs/aggregateHelpers/base/common.aggregate")(
@@ -36,6 +37,11 @@ let applicationHandler = require("../controllers/users/applications_controller")
   CommonCommandHandler
 );
 
+let routeHistoryHandler = require("../controllers/users/route_history_controller")(
+  routeHistoryQueryHander,
+  CommonCommandHandler
+);
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/profile_pictures/");
@@ -47,25 +53,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-/* Advertiser Applications */
-
-// Get pending applications
-router.get("/apply/pending", applicationHandler.getPendingApplications);
-
-// Get pending applications
-router.get("/apply", applicationHandler.getAllApplications);
-
-// Get application by user id
-router.get("/apply/:id", applicationHandler.getApplicationByUserId);
-
-// Add new application
-router.post("/apply/new", applicationHandler.createApplication);
-
-// Approve application
-router.put("/apply/approve", applicationHandler.approveApplication);
-
-// Reject application
-router.put("/apply/reject", applicationHandler.rejectApplication);
+/**
+ * User routes
+ */
 
 // Create new user account
 router.post("/new", userHandler.createUser);
@@ -93,5 +83,40 @@ router.get("/:id", userHandler.getUserById);
 
 /* GET users listing. */
 router.get("/", userHandler.getAllUsers);
+
+/*
+ * Advertiser Applications
+ */
+
+// Get pending applications
+router.get("/apply/pending", applicationHandler.getPendingApplications);
+
+// Get pending applications
+router.get("/apply", applicationHandler.getAllApplications);
+
+// Get application by user id
+router.get("/apply/:id", applicationHandler.getApplicationByUserId);
+
+// Add new application
+router.post("/apply/new", applicationHandler.createApplication);
+
+// Approve application
+router.put("/apply/approve", applicationHandler.approveApplication);
+
+// Reject application
+router.put("/apply/reject", applicationHandler.rejectApplication);
+
+/**
+ * Route history
+ */
+
+// Get route history
+router.get("/history/:id", routeHistoryHandler.getRouteHistoryByUserId);
+
+// Create route history
+router.post("/history/new", routeHistoryHandler.createRouteHistory);
+
+// Delete route history
+router.post("/history/delete", routeHistoryHandler.deleteRouteHistory);
 
 module.exports = router;

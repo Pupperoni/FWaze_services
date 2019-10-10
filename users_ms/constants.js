@@ -10,6 +10,8 @@ module.exports = {
     CREATE_USER_APPLICATION: "create_user_application",
     APPROVE_USER_APPLICATION: "approve_user_application",
     REJECT_USER_APPLICATION: "reject_user_application",
+    CREATE_USER_ROUTE_HISTORY: "create_user_route_history",
+    DELETE_USER_ROUTE_HISTORY: "delete_user_route_history",
 
     // Report aggregate constants
     CREATE_REPORT: "create_report",
@@ -42,11 +44,11 @@ module.exports = {
     USER_WORK_UPDATED: "user_work_updated",
     USER_ROUTE_CREATED: "user_route_created",
     USER_ROUTE_DELETED: "user_route_deleted",
-
-    // Application aggregate constants
     USER_APPLICATION_CREATED: "user_application_created",
     USER_APPLICATION_APPROVED: "user_application_approved",
     USER_APPLICATION_REJECTED: "user_application_rejected",
+    USER_ROUTE_HISTORY_CREATED: "user_route_history_created",
+    USER_ROUTE_HISTORY_DELETED: "user_route_history_deleted",
 
     // Report aggregate constants
     REPORT_CREATED: "report_created",
